@@ -1,0 +1,322 @@
+<script lang="ts" setup>
+import axios from "axios";
+import VueDataTable from "@bhplugin/vue3-datatable";
+import { stringify } from "qs";
+
+interface IProps {
+    cols: any;
+    api: string;
+    includes?: string[];
+    noCreatable?: boolean;
+    noEditable?: boolean;
+}
+
+const props = defineProps<IProps>();
+
+const emit = defineEmits<{
+    (e: "showForm", value?: any): any | void;
+}>();
+
+const columns = computed(() => [
+    ...props.cols,
+    { field: "actions", title: "عملیات", filter: false, sort: false },
+]);
+
+const params = reactive({
+    current_page: 1,
+    pagesize: 20,
+    sort_column: "id",
+    sort_direction: "asc",
+    column_filters: [],
+});
+
+const baseUrl = `${props.api}/get`;
+
+const activeUrl = ref(baseUrl);
+
+const _rows = ref<TPageProps>();
+const isLoading = ref(false);
+
+function fetchData() {
+    activeUrl.value = baseUrl.concat(
+        "?" +
+            stringify(
+                {
+                    per_page: params.pagesize,
+                    page: params.current_page,
+                    filter: Object.fromEntries(
+                        params.column_filters
+                            .filter((item) => item.value)
+                            .map(({ value, field }) => [field, value])
+                    ),
+                    sort: `${params.sort_direction === "asc" ? "" : "-"}${
+                        params.sort_column
+                    }`,
+                    include: props.includes?.join(","),
+                },
+                { arrayFormat: "brackets", skipNulls: true, encode: false }
+            )
+    );
+
+    isLoading.value = true;
+    axios
+        .get(activeUrl.value)
+        .then(({ data: res }) => {
+            _rows.value = res;
+        })
+        .finally(() => (isLoading.value = false));
+}
+
+const changeServer = (data: any) => {
+    params.current_page = data.current_page;
+    params.pagesize = data.pagesize;
+    params.sort_column = data.sort_column;
+    params.sort_direction = data.sort_direction;
+    params.column_filters = data.column_filters;
+    fetchData();
+};
+
+const datatableRef = useTemplateRef<any>("datatable");
+
+const removeItems = (ids) => {
+    if (!_rows.value?.data) return;
+
+    _rows.value.data = _rows.value.data.filter(({ id: itemId }) => {
+        return Array.isArray(ids) ? !ids.includes(itemId || 0) : itemId !== ids;
+    });
+};
+
+const handleApiError = (err) => {
+    useToast(err.response.data.error, { type: "error" });
+};
+
+const deleteGenerate = reactive({
+    id: 0,
+    modal: false,
+});
+
+function onDelete() {
+    axios
+        .delete(`${props.api}/${deleteGenerate.id.toString()}`)
+        .then(({ data: res }) => {
+            removeItems(deleteGenerate.id);
+            useToast(res?.msg, { type: "success" });
+        })
+        .catch(handleApiError);
+    deleteGenerate.modal = false;
+}
+
+const exportTable = (type: string) => {
+    let records = datatableRef.value?.getSelectedRows();
+    if (!records?.length) {
+        records = _rows.value?.data;
+    }
+    const filename = "table";
+
+    if (type === "csv" || type === "txt") {
+        // CSV or TXT
+        const coldelimiter = ",";
+        const linedelimiter = "\n";
+        let result = props.cols
+            .filter((d: any) => !d.hide)
+            .map((d: any) => {
+                return d.title;
+            })
+            .join(coldelimiter);
+        result += linedelimiter;
+        records.map((item: any) => {
+            props.cols
+                .filter((d: any) => !d.hide)
+                .map((d: any, index: number) => {
+                    if (index > 0) {
+                        result += coldelimiter;
+                    }
+                    const val = d.field
+                        .split(".")
+                        .reduce(
+                            (acc: any, part: any) => acc && acc[part],
+                            item
+                        );
+                    result += val;
+                });
+            result += linedelimiter;
+        });
+
+        if (result === null) return;
+
+        if (type === "csv") {
+            var data =
+                "data:application/csv;charset=utf-8," +
+                encodeURIComponent(result);
+            var link = document.createElement("a");
+            link.setAttribute("href", data);
+            link.setAttribute("download", filename + ".csv");
+            link.click();
+        }
+
+        if (type === "txt") {
+            var data =
+                "data:application/txt;charset=utf-8," +
+                encodeURIComponent(result);
+            var link = document.createElement("a");
+            link.setAttribute("href", data);
+            link.setAttribute("download", filename + ".txt");
+            link.click();
+        }
+    } else if (type === "print") {
+        // PRINT
+        let rowhtml = "<p>" + filename + "</p>";
+        rowhtml +=
+            '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
+        props.cols
+            .filter((d: any) => !d.hide)
+            .map((d: any) => {
+                rowhtml += "<th>" + d.title + "</th>";
+            });
+        rowhtml += "</tr></thead>";
+        rowhtml += "<tbody>";
+
+        records.map((item: any) => {
+            rowhtml += "<tr>";
+            props.cols
+                .filter((d: any) => !d.hide)
+                .map((d: any) => {
+                    const val = d.field
+                        .split(".")
+                        .reduce(
+                            (acc: any, part: any) => acc && acc[part],
+                            item
+                        );
+                    rowhtml += "<td>" + val + "</td>";
+                });
+            rowhtml += "</tr>";
+        });
+        rowhtml +=
+            "<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>";
+        rowhtml += "</tbody></table>";
+        const winPrint: any = window.open(
+            "",
+            "",
+            "left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0"
+        );
+        winPrint.document.write("<title>" + filename + "</title>" + rowhtml);
+        winPrint.document.close();
+        winPrint.focus();
+        winPrint.onafterprint = () => {
+            winPrint.close();
+        };
+        winPrint.print();
+    }
+};
+
+onMounted(() => fetchData());
+
+defineExpose({ data: _rows });
+</script>
+
+<template>
+    <div class="container m-auto py-8">
+        <div class="mb-5 flex items-center gap-2">
+            <div class="grow">
+                <PrimaryButton @click="emit('showForm')" v-if="!noCreatable">
+                    <ph-plus-circle-duotone class="size-5" />
+                    جدید
+                </PrimaryButton>
+            </div>
+            <SecondaryButton
+                type="button"
+                class="btn btn-small"
+                @click="exportTable('csv')"
+            >
+                <ph-microsoft-excel-logo class="size-5" />
+                CSV
+            </SecondaryButton>
+            <SecondaryButton
+                type="button"
+                class="btn btn-small"
+                @click="exportTable('txt')"
+            >
+                <ph-file-txt class="size-5" />
+                TXT
+            </SecondaryButton>
+            <SecondaryButton
+                type="button"
+                class="btn btn-small"
+                @click="exportTable('print')"
+            >
+                <ph-printer class="size-5" />
+                PRINT
+            </SecondaryButton>
+        </div>
+        <VueDataTable
+            ref="datatable"
+            :rows="_rows?.data || []"
+            :columns="columns"
+            :loading="isLoading"
+            :pageSize="params.pagesize"
+            :totalRows="_rows?.total"
+            sortable
+            isServerMode
+            hasCheckbox
+            columnFilter
+            :sortColumn="params.sort_column"
+            :sortDirection="params.sort_direction"
+            @change="changeServer"
+        >
+            <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
+                <slot
+                    :name="slotName"
+                    v-bind="slotProps"
+                    v-if="slotName !== 'actions'"
+                />
+            </template>
+            <template #actions="{ value }">
+                <div class="flex items-center gap-x-2 justify-evenly">
+                    <SecondaryButton
+                        @click="emit('showForm', value)"
+                        v-if="!noEditable"
+                    >
+                        <ph-pencil-line />
+                    </SecondaryButton>
+                    <DangerButton
+                        @click="
+                            () => {
+                                deleteGenerate.id = value.id;
+                                deleteGenerate.modal = true;
+                            }
+                        "
+                    >
+                        <ph-trash />
+                    </DangerButton>
+                </div>
+            </template>
+        </VueDataTable>
+        <DialogModal
+            :show="deleteGenerate.modal"
+            @close="deleteGenerate.modal = false"
+        >
+            <template #title> حذف آیتم </template>
+            <template #content> آیا مایل به حذف آیتم انتخابی هستید؟ </template>
+            <template #footer>
+                <PrimaryButton @click="onDelete">تأیید</PrimaryButton>
+                <SecondaryButton @click="deleteGenerate.modal = false"
+                    >خیر</SecondaryButton
+                >
+            </template>
+        </DialogModal>
+    </div>
+</template>
+
+<style>
+tbody tr td {
+    @apply !text-right;
+}
+
+.bh-pagination {
+    direction: ltr !important;
+}
+
+.bh-table-responsive table th .bh-filter {
+    @apply rtl:flex-row-reverse;
+}
+</style>

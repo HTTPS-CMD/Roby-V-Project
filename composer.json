@@ -16,10 +16,12 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.0",
+        "spatie/laravel-query-builder": "^6.3",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "fumeapp/modeltyper": "^3.1",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
@@ -38,7 +40,10 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "app/helper.php"
+        ]
     },
     "scripts": {
         "post-autoload-dump": [

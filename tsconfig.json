@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "@Components/*": ["resources/js/Components/*"],
+            "@Layouts/*": ["resources/js/Layouts/*"],
+            "@Composables/*": ["resources/js/Composables/*"],
+            "ziggy-js": ["./vendor/tightenco/ziggy"]
+        },
+        "lib": ["DOM", "ESNext"],
+        "module": "esnext",
+        "types": [
+            "vite/client",
+            "unplugin-fonts/client",
+            "vue3-toastify/global"
+        ],
+        "allowJs": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": true,
+        "useDefineForClassFields": true,
+        "moduleResolution": "node",
+        "jsx": "preserve",
+        "strictNullChecks": true,
+        "isolatedModules": true
+    },
+    "exclude": ["node_modules", "public"],
+    "extends": "@vue/tsconfig/tsconfig.json",
+    "include": [
+        "resources/**/*.ts",
+        "resources/**/*.d.ts",
+        "resources/**/*.vue",
+        "resources/**/*.tsx",
+        "vite.config.ts"
+    ]
+}

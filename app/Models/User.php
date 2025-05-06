@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -16,9 +17,10 @@ class User extends Authenticatable
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use HasProfilePhoto;
+    use HasRoles,TwoFactorAuthenticatable;
     use Notifiable;
-    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +31,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -52,16 +61,25 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function getPermissionArray(): mixed
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->getAllPermissions()->mapWithKeys(fn ($pr) => [$pr['name'] => true]
+        );
+    }
+
+    public function getRole()
+    {
+        return $this->getRoleNames();
+    }
+
+    public static function findOrCreate(string $email, array $array)
+    {
+        $user = static::where('email', $email)->first();
+
+        if (! $user) {
+            return static::query()->create($array);
+        }
+
+        return $user;
     }
 }

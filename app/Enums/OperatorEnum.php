@@ -8,6 +8,8 @@ enum OperatorEnum: string
     case Hamrah = 'hamrah';
     case Irancell = 'irancell';
     case Rigthtel = 'rigthtel';
+    case Shatel = 'shatel';
+    case TCI = 'tci';
 
     public static function values(): array
     {

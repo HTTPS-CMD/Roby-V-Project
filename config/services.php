@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'v2ray' => [
+        'aes_key' => env('V2RAY_SECRET_KEY'),
+    ],
+
 ];

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->longText('link')->default('#');
+            $table->longText('link')->nullable();
             $table->boolean('status')->default(true);
             $table->boolean('all_users')->default(false);
             $table->timestamps();

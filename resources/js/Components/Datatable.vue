@@ -3,8 +3,15 @@ import axios from "axios";
 import VueDataTable from "@bhplugin/vue3-datatable";
 import { stringify } from "qs";
 
+interface IColumn {
+    field: string;
+    title: string;
+    filter?: boolean;
+    sort?: boolean;
+}
+
 interface IProps {
-    cols: any;
+    cols: IColumn[];
     api: string;
     includes?: string[];
     noCreatable?: boolean;
@@ -257,7 +264,6 @@ defineExpose({ data: _rows });
             :totalRows="_rows?.total"
             sortable
             isServerMode
-            hasCheckbox
             columnFilter
             :sortColumn="params.sort_column"
             :sortDirection="params.sort_direction"

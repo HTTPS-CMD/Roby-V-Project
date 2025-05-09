@@ -12,7 +12,7 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
-Route::redirect('/', route('login'));
+Route::redirect('/', '/login');
 
 Route::middleware([
     'auth:sanctum',

@@ -55,7 +55,16 @@ export default defineConfig({
                 "@vueuse/core",
                 { "ziggy-js": ["route"] },
                 { "@vueuse/integrations": ["*"] },
-                { "@inertiajs/vue3": ["router", "useForm"] },
+                { "@inertiajs/vue3": ["router", "useForm", "usePage"] },
+                {
+                    from: "lodash",
+                    imports: [
+                        { name: "find", as: "_find" },
+                        { name: "omit", as: "_omit" },
+                        { name: "pick", as: "_pick" },
+                        { name: "each", as: "_each" },
+                    ],
+                },
             ],
             dirs: ["./resources/js/Composables", "./resources/js/Utils"],
             dts: "./resources/js/Types/auto-imports.d.ts",

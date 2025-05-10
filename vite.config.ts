@@ -54,8 +54,8 @@ export default defineConfig({
                 "vue",
                 "@vueuse/core",
                 { "ziggy-js": ["route"] },
-                { "@vueuse/integrations": ["*"] },
-                { "@inertiajs/vue3": ["router", "useForm", "usePage"] },
+                { "@inertiajs/vue3": ["router", "usePage"] },
+                { "@formkit/inertia": ["useForm"] },
                 {
                     from: "lodash",
                     imports: [
@@ -63,6 +63,8 @@ export default defineConfig({
                         { name: "omit", as: "_omit" },
                         { name: "pick", as: "_pick" },
                         { name: "each", as: "_each" },
+                        { name: "has", as: "_has" },
+                        { name: "empty", as: "_empty" },
                     ],
                 },
             ],

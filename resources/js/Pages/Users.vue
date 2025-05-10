@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const props = defineProps<{ roles: models.Role[] }>();
+
 const columns = [
     { field: "name", title: "نام", filter: true, sort: true },
     { field: "email", title: "ایمیل", filter: true, sort: true },
@@ -28,6 +30,10 @@ const user = reactive({
                 </div>
             </template>
         </Datatable>
-        <DialogsUser v-model:modal="user.modal" :item="user.item" />
+        <DialogsUser
+            v-model:modal="user.modal"
+            :item="user.item"
+            :roles="roles || []"
+        />
     </AppLayout>
 </template>

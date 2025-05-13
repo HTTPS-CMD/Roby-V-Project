@@ -33,4 +33,12 @@ Route::middleware([
         Route::match(['put','patch'],'{id}', 'update')->name('news.update')->middleware('permission:edit-news');
         Route::delete('{id}', 'destroy')->name('news.destroy')->middleware('permission:delete-news');
     });
+
+    Route::controller(\App\Http\Controllers\Admin\ServerController::class)->prefix('servers')->group(function () {
+        Route::get('/', 'index')->name('servers.index')->middleware('permission:view-news');
+        Route::get('get', 'getIndex')->name('servers.getIndex')->middleware('permission:view-news');
+        Route::post('store', 'store')->name('servers.store')->middleware('permission:add-news');
+        Route::match(['put','patch'],'{id}', 'update')->name('servers.update')->middleware('permission:edit-news');
+        Route::delete('{id}', 'destroy')->name('servers.destroy')->middleware('permission:delete-news');
+    });
 });

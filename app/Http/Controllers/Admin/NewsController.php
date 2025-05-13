@@ -31,6 +31,9 @@ class NewsController extends Controller
             AllowedFilter::custom('title',new LikeFilter),
             AllowedFilter::custom('content',new LikeFilter),
             'status',
+            AllowedFilter::callback('user_id',function($query,$value){
+                $query->where('name','like',"%$value%");
+            })
         ])->allowedSorts([
             'id',
             'title',

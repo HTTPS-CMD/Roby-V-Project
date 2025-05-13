@@ -55,7 +55,7 @@ const role = reactive({
             </template>
             <template #with_count_users="{ value }">
                 <SecondaryButton class="rounded-full">
-                    {{ `${value.users_count} کاربر` }}
+                    {{ `${value.with_count_users} کاربر` }}
                 </SecondaryButton>
             </template>
         </Datatable>

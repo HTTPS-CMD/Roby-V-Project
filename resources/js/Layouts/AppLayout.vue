@@ -68,6 +68,18 @@ const logout = () => {
                                 >
                                     نقش‌ها
                                 </NavLink>
+                                <NavLink
+                                    :href="route('news.index')"
+                                    :active="route().current('news.index')"
+                                >
+                                    اخبار
+                                </NavLink>
+                                <NavLink
+                                    :href="route('servers.index')"
+                                    :active="route().current('servers.index')"
+                                >
+                                    سرورها
+                                </NavLink>
                             </div>
                         </div>
 

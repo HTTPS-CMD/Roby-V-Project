@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('latin_name');
-            $table->longText('config');
             $table->integer('traffic')->default(0)->comment('enter by mb');
             $table->string('location');
             $table->boolean('status')->default(true);

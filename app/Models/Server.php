@@ -12,7 +12,6 @@ class Server extends Model
     protected $fillable = [
         'name',
         'latin_name',
-        'config',
         'traffic',
         'location',
         'status',
@@ -25,5 +24,10 @@ class Server extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'serverable');
+    }
+
+    public function configs()
+    {
+        return $this->hasMany(VConfig::class, 'server_id');
     }
 }

@@ -61,4 +61,12 @@ Route::middleware([
         Route::match(['patch','put'],'update/{id}','update')->name('users.update')->middleware('permission:edit-user');
         Route::delete('{id}','destroy')->name('users.destroy')->middleware('permission:delete-user');
     });
+
+    Route::controller(\App\Http\Controllers\Admin\NotificationController::class)->prefix('notifications')->group(function () {
+        Route::get('/','index')->name('notifications.index')->middleware('permission:view-notifications');
+        Route::get('get','getIndex')->name('notifications.data')->middleware('permission:view-notifications');
+        Route::post('store','store')->name('notifications.store')->middleware('permission:add-notifications');
+        Route::match(['patch','put'],'update/{id}','update')->name('notifications.update')->middleware('permission:edit-notifications');
+        Route::delete('{id}','destroy')->name('notifications.destroy')->middleware('permission:delete-notifications');
+    });
 });

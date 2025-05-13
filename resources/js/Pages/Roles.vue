@@ -34,6 +34,7 @@ const role = reactive({
             api="roles"
             :cols="columns"
             :includes="['permissions']"
+            no-selectable
             @show-form="
                 (args) => {
                     role.item = args

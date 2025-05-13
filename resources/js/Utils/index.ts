@@ -12,3 +12,18 @@ export function useConvertFileSize(bytes: number, decimals: number = 0) {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
+export const $d = (date: Date | string, type: "date" | "time" | "datetime") => {
+    if (typeof date === "string") {
+        date = new Date(date);
+    }
+    if (type === "date") {
+        return date.toLocaleDateString("fa-IR");
+    }
+    if (type === "time") {
+        return date.toLocaleTimeString("fa-IR");
+    }
+    if (type === "datetime") {
+        return date.toLocaleString("fa-IR");
+    }
+};

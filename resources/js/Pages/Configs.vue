@@ -19,6 +19,12 @@ const config = reactive({
 });
 
 const { copy } = useClipboard();
+
+async function copyConfig(config: string) {
+    const content = await decryptAES(config);
+    copy(content);
+    useToast("کپی شد", { type: "success" });
+}
 </script>
 
 <template>
@@ -55,7 +61,7 @@ const { copy } = useClipboard();
             </template>
             <template #config="{ value }">
                 <div
-                    @click="copy(decryptAES(value.config))"
+                    @click="copyConfig(value.config)"
                     class="border border-dashed border-gray-500 hover:border-solid hover:border-green-500 px-2 py-1.5 rounded-full cursor-pointer hover:text-green-500 transition"
                 >
                     <ph-copy-simple-light />

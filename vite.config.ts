@@ -70,6 +70,7 @@ export default defineConfig({
                         { name: "remove", as: "_remove" },
                         { name: "isArray", as: "_isArray" },
                         { name: "includes", as: "_includes" },
+                        { name: "map", as: "_map" },
                     ],
                 },
             ],

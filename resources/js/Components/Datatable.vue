@@ -16,6 +16,8 @@ interface IProps {
     includes?: string[];
     noCreatable?: boolean;
     noEditable?: boolean;
+    noTimestamp?: boolean;
+    noSelectable?: boolean;
 }
 
 const props = defineProps<IProps>();
@@ -26,6 +28,22 @@ const emit = defineEmits<{
 
 const columns = computed(() => [
     ...props.cols,
+    ...(!props.noTimestamp
+        ? [
+              {
+                  field: "created_at",
+                  title: "ایجاد",
+                  filter: false,
+                  sort: true,
+              },
+              {
+                  field: "updated_at",
+                  title: "بروزرسانی",
+                  filter: false,
+                  sort: true,
+              },
+          ]
+        : []),
     { field: "actions", title: "عملیات", filter: false, sort: false },
 ]);
 
@@ -107,6 +125,7 @@ function onDelete() {
         .delete(`${props.api}/${deleteGenerate.id.toString()}`)
         .then(({ data: res }) => {
             removeItems(deleteGenerate.id);
+            datatableRef.value?.clearSelectedRows();
             useToast(res?.msg, { type: "success" });
         })
         .catch(handleApiError);
@@ -216,6 +235,10 @@ const exportTable = (type: string) => {
     }
 };
 
+const selectedRows = computed(() => {
+    return datatableRef.value?.getSelectedRows() || [];
+});
+
 onMounted(() => fetchData());
 
 defineExpose({ data: _rows });
@@ -229,6 +252,19 @@ defineExpose({ data: _rows });
                     <ph-plus-circle-duotone class="size-5" />
                     جدید
                 </PrimaryButton>
+                <DangerButton
+                    v-if="!noSelectable"
+                    :disabled="!selectedRows.length"
+                    @click="
+                        () => {
+                            deleteGenerate.id = 0;
+                            deleteGenerate.modal = true;
+                        }
+                    "
+                >
+                    <ph-trash class="size-5" />
+                    {{ `حذف (${selectedRows.length})` }}
+                </DangerButton>
             </div>
             <SecondaryButton
                 type="button"
@@ -266,6 +302,7 @@ defineExpose({ data: _rows });
             isServerMode
             columnFilter
             stickyHeader
+            :hasCheckbox="!noSelectable"
             :sortColumn="params.sort_column"
             :sortDirection="params.sort_direction"
             @change="changeServer"
@@ -274,8 +311,24 @@ defineExpose({ data: _rows });
                 <slot
                     :name="slotName"
                     v-bind="slotProps"
-                    v-if="slotName !== 'actions'"
+                    v-if="
+                        !_includes(
+                            [
+                                'actions',
+                                ...(!noTimestamp
+                                    ? ['created_at', 'updated_at']
+                                    : []),
+                            ],
+                            slotName
+                        )
+                    "
                 />
+            </template>
+            <template #created_at="{ value }" v-if="!noTimestamp">
+                {{ $d(value.created_at, "datetime") }}
+            </template>
+            <template #updated_at="{ value }" v-if="!noTimestamp">
+                {{ $d(value.updated_at, "datetime") }}
             </template>
             <template #actions="{ value }">
                 <div class="flex items-center gap-x-2 justify-evenly">
@@ -300,7 +353,9 @@ defineExpose({ data: _rows });
         </VueDataTable>
         <DialogsAlert
             title="حذف آیتم"
-            content="آیا مایل به حذف آیتم انتخابی هستید؟"
+            :content="`آیا مایل به حذف آیتم${
+                deleteGenerate.id === 0 ? 'ها' : ''
+            } انتخابی هستید؟`"
             v-model:modal="deleteGenerate.modal"
             @ok="onDelete"
         />

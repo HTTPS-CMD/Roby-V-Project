@@ -8,8 +8,6 @@ const columns = [
     { field: "roles", title: "نقش", filter: false, sort: false },
 ];
 
-const datatableRef = useTemplateRef("datatable");
-
 const user = reactive({
     item: undefined,
     modal: false,
@@ -18,12 +16,30 @@ const user = reactive({
 
 <template>
     <AppLayout>
-        <Datatable api="users" :cols="columns" ref="datatable">
+        <Datatable
+            api="users"
+            :cols="columns"
+            :includes="['roles']"
+            @show-form="
+                (args) => {
+                    user.item = args
+                        ? {
+                              ..._pick(args, ['id', 'name', 'email', 'status']),
+                              roles: args.roles[0].name,
+                              password: '',
+                              password_confirm: '',
+                              has_password: false,
+                          }
+                        : undefined;
+                    user.modal = true;
+                }
+            "
+        >
             <template #roles="{ value }">
                 <div class="flex items-center gap-x-2 flex-wrap">
                     <SecondaryButton
                         class="rounded-full"
-                        v-for="(item, i) in value"
+                        v-for="(item, i) in value.roles"
                         :key="i"
                         v-text="item.title"
                     ></SecondaryButton>

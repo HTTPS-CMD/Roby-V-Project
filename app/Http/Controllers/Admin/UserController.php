@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Fortify\PasswordValidationRules;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
+    use PasswordValidationRules;
     /**
      * Display a listing of the resource.
      */
@@ -50,7 +52,11 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        //
+        $request->validate(['password' => ['required_if:has_password,true', 'confirmed'], 'mobile' => 'unique:users']);
+        $item = User::create($request->except(['roles']));
+        $item->syncRoles($request->input('roles'));
+
+        return back();
     }
 
     /**
@@ -74,7 +80,12 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate(['password' => ['required_if:has_password,true', 'confirmed'], 'mobile' => 'unique:users']);
+        $item = User::find($id);
+        $item->syncRoles($request->input('roles'));
+        $item->update($request->except(['roles']));
+
+        return response(['msg'=>__('common.updated',['name'=>__('validation.attributes.user')]),'item'=>$item->fresh(['roles'])]);
     }
 
     /**
@@ -82,6 +93,8 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::destroy($id);
+
+        return response(['msg' => __('common.removed.item', ['name' => __('validation.attributes.user')])]);
     }
 }

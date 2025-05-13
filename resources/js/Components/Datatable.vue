@@ -16,6 +16,8 @@ interface IProps {
     includes?: string[];
     noCreatable?: boolean;
     noEditable?: boolean;
+    noTimestamp?: boolean;
+    noSelectable?: boolean;
 }
 
 const props = defineProps<IProps>();
@@ -26,6 +28,22 @@ const emit = defineEmits<{
 
 const columns = computed(() => [
     ...props.cols,
+    ...(!props.noTimestamp
+        ? [
+              {
+                  field: "created_at",
+                  title: "ایجاد",
+                  filter: false,
+                  sort: true,
+              },
+              {
+                  field: "updated_at",
+                  title: "بروزرسانی",
+                  filter: false,
+                  sort: true,
+              },
+          ]
+        : []),
     { field: "actions", title: "عملیات", filter: false, sort: false },
 ]);
 
@@ -88,9 +106,9 @@ const datatableRef = useTemplateRef<any>("datatable");
 const removeItems = (ids) => {
     if (!_rows.value?.data) return;
 
-    _rows.value.data = _rows.value.data.filter(({ id: itemId }) => {
-        return Array.isArray(ids) ? !ids.includes(itemId || 0) : itemId !== ids;
-    });
+    _remove(_rows.value.data, ({ id: itemId }) =>
+        _isArray(ids) ? _includes(ids, itemId || 0) : itemId === ids
+    );
 };
 
 const handleApiError = (err) => {
@@ -104,9 +122,16 @@ const deleteGenerate = reactive({
 
 function onDelete() {
     axios
-        .delete(`${props.api}/${deleteGenerate.id.toString()}`)
+        .delete(
+            `${props.api}/${
+                deleteGenerate.id === 0
+                    ? _join(_map(selectedRows.value, "id"), ",")
+                    : deleteGenerate.id
+            }`
+        )
         .then(({ data: res }) => {
             removeItems(deleteGenerate.id);
+            datatableRef.value?.clearSelectedRows();
             useToast(res?.msg, { type: "success" });
         })
         .catch(handleApiError);
@@ -216,6 +241,10 @@ const exportTable = (type: string) => {
     }
 };
 
+const selectedRows = computed(() => {
+    return datatableRef.value?.getSelectedRows() || [];
+});
+
 onMounted(() => fetchData());
 
 defineExpose({ data: _rows });
@@ -229,6 +258,19 @@ defineExpose({ data: _rows });
                     <ph-plus-circle-duotone class="size-5" />
                     جدید
                 </PrimaryButton>
+                <DangerButton
+                    v-if="!noSelectable"
+                    :disabled="!selectedRows.length"
+                    @click="
+                        () => {
+                            deleteGenerate.id = 0;
+                            deleteGenerate.modal = true;
+                        }
+                    "
+                >
+                    <ph-trash class="size-5" />
+                    {{ `حذف (${selectedRows.length})` }}
+                </DangerButton>
             </div>
             <SecondaryButton
                 type="button"
@@ -265,6 +307,8 @@ defineExpose({ data: _rows });
             sortable
             isServerMode
             columnFilter
+            stickyHeader
+            :hasCheckbox="!noSelectable"
             :sortColumn="params.sort_column"
             :sortDirection="params.sort_direction"
             @change="changeServer"
@@ -273,8 +317,24 @@ defineExpose({ data: _rows });
                 <slot
                     :name="slotName"
                     v-bind="slotProps"
-                    v-if="slotName !== 'actions'"
+                    v-if="
+                        !_includes(
+                            [
+                                'actions',
+                                ...(!noTimestamp
+                                    ? ['created_at', 'updated_at']
+                                    : []),
+                            ],
+                            slotName
+                        )
+                    "
                 />
+            </template>
+            <template #created_at="{ value }" v-if="!noTimestamp">
+                {{ $d(value.created_at, "datetime") }}
+            </template>
+            <template #updated_at="{ value }" v-if="!noTimestamp">
+                {{ $d(value.updated_at, "datetime") }}
             </template>
             <template #actions="{ value }">
                 <div class="flex items-center gap-x-2 justify-evenly">
@@ -297,21 +357,14 @@ defineExpose({ data: _rows });
                 </div>
             </template>
         </VueDataTable>
-        <DialogModal
-            :show="deleteGenerate.modal"
-            @close="deleteGenerate.modal = false"
-        >
-            <template #title> حذف آیتم </template>
-            <template #content> آیا مایل به حذف آیتم انتخابی هستید؟ </template>
-            <template #footer>
-                <PrimaryButton @click="onDelete">تأیید</PrimaryButton>
-                <SecondaryButton
-                    @click="deleteGenerate.modal = false"
-                    class="ms-2"
-                    >خیر</SecondaryButton
-                >
-            </template>
-        </DialogModal>
+        <DialogsAlert
+            title="حذف آیتم"
+            :content="`آیا مایل به حذف آیتم${
+                deleteGenerate.id === 0 ? 'ها' : ''
+            } انتخابی هستید؟`"
+            v-model:modal="deleteGenerate.modal"
+            @ok="onDelete"
+        />
     </div>
 </template>
 

@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Tags\HasTags;
 
 class Server extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes,HasTags;
 
     protected $fillable = [
         'name',
         'latin_name',
-        'config',
         'traffic',
         'location',
         'status',
@@ -25,5 +25,10 @@ class Server extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'serverable');
+    }
+
+    public function configs()
+    {
+        return $this->hasMany(VConfig::class, 'server_id');
     }
 }

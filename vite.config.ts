@@ -6,6 +6,7 @@ import Components from "unplugin-vue-components/vite";
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import Unfonts from "unplugin-fonts/vite";
+import { optimizeLodashImports } from "@optimize-lodash/rollup-plugin";
 
 export default defineConfig({
     build: {
@@ -65,6 +66,12 @@ export default defineConfig({
                         { name: "each", as: "_each" },
                         { name: "has", as: "_has" },
                         { name: "empty", as: "_empty" },
+                        { name: "groupBy", as: "_groupBy" },
+                        { name: "remove", as: "_remove" },
+                        { name: "isArray", as: "_isArray" },
+                        { name: "includes", as: "_includes" },
+                        { name: "map", as: "_map" },
+                        { name: "join", as: "_join" },
                     ],
                 },
             ],
@@ -72,6 +79,7 @@ export default defineConfig({
             dts: "./resources/js/Types/auto-imports.d.ts",
             vueTemplate: true,
         }),
+        optimizeLodashImports({ useLodashEs: true }),
         Icons({
             autoInstall: true,
         }),

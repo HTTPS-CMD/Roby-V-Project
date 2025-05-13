@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->boolean('status')->default(true);
+            $table->integer('sortable')->default(0);
             $table->timestamps();
         });
     }

@@ -12,9 +12,9 @@ class News extends Model
 
     protected $fillable = [
         'title',
-        'slug',
         'content',
         'status',
+        'user_id'
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -22,5 +22,10 @@ class News extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

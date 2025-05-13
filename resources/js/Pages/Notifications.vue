@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-const props = defineProps<{ roles: models.Role[] }>();
-
 const columns = [
-    { field: "name", title: "نام", filter: true, sort: true },
-    { field: "email", title: "ایمیل", filter: true, sort: true },
+    { field: "title", title: "عنوان", filter: true, sort: true },
+    { field: "link", title: "لینک", filter: false, sort: false },
     { field: "status", title: "وضعیت", filter: true, sort: true },
-    { field: "roles", title: "نقش", filter: false, sort: false },
+    { field: "all_users", title: "نمایش برای همه", filter: true, sort: true },
 ];
 
-const user = reactive({
+const notification = reactive({
     item: undefined,
     modal: false,
 });
@@ -17,22 +15,22 @@ const user = reactive({
 <template>
     <AppLayout>
         <Datatable
-            api="users"
+            api="notifications"
             :cols="columns"
-            :includes="['roles']"
-            no-selectable
+            :includes="['users']"
             @show-form="
                 (args) => {
-                    user.item = args
+                    notification.item = args
                         ? {
-                              ..._pick(args, ['id', 'name', 'email', 'status']),
-                              roles: args.roles[0].name,
-                              password: '',
-                              password_confirm: '',
-                              has_password: false,
+                              ..._omit(args, [
+                                  'updated_at',
+                                  'created_at',
+                                  'users',
+                              ]),
+                              users: _map(args.users, 'id'),
                           }
                         : undefined;
-                    user.modal = true;
+                    notification.modal = true;
                 }
             "
         >
@@ -47,10 +45,9 @@ const user = reactive({
                 </div>
             </template>
         </Datatable>
-        <DialogsUser
-            v-model:modal="user.modal"
-            :item="user.item"
-            :roles="roles || []"
+        <DialogsNotification
+            v-model:modal="notification.modal"
+            :item="notification.item"
         />
     </AppLayout>
 </template>

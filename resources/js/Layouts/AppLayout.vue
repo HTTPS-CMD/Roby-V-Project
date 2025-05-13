@@ -59,6 +59,44 @@ const logout = () => {
                                 >
                                     کاربران
                                 </NavLink>
+                                <NavLink
+                                    :href="route('roles.index')"
+                                    :active="route().current('roles.index')"
+                                >
+                                    نقش‌ها
+                                </NavLink>
+                                <NavLink
+                                    :href="route('news.index')"
+                                    :active="route().current('news.index')"
+                                >
+                                    اخبار
+                                </NavLink>
+                                <NavLink
+                                    :href="route('servers.index')"
+                                    :active="route().current('servers.index')"
+                                >
+                                    سرورها
+                                </NavLink>
+                                <NavLink
+                                    :href="route('configs.index')"
+                                    :active="route().current('configs.index')"
+                                >
+                                    کانفیگ‌ها
+                                </NavLink>
+                                <NavLink
+                                    :href="route('notifications.index')"
+                                    :active="
+                                        route().current('notifications.index')
+                                    "
+                                >
+                                    اعلانات
+                                </NavLink>
+                                <NavLink
+                                    :href="route('faqs.index')"
+                                    :active="route().current('faqs.index')"
+                                >
+                                    سوالات متداول
+                                </NavLink>
                             </div>
                         </div>
 

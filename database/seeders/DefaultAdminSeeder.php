@@ -9,6 +9,13 @@ use Spatie\Permission\Models\Role;
 
 class DefaultAdminSeeder extends Seeder
 {
+    public $permissions = [
+        'view-server', 'add-server', 'edit-server', 'delete-server',
+        'view-configs', 'add-configs', 'edit-configs', 'delete-configs',
+        'view-user', 'add-user', 'edit-user', 'delete-user',
+        'view-news', 'add-news', 'edit-news', 'delete-news',
+        'view-notifications', 'add-notifications', 'edit-notifications', 'delete-notifications',
+    ];
     /**
      * Run the database seeds.
      */
@@ -20,21 +27,14 @@ class DefaultAdminSeeder extends Seeder
             'password' => bcrypt('@12345Bb'),
         ]);
 
-        $permissions = [
-            'view-server', 'add-server', 'edit-server', 'delete-server',
-            'view-user', 'add-user', 'edit-user', 'delete-user',
-            'view-news', 'add-news', 'edit-news', 'delete-news',
-            'view-notifications', 'add-notifications', 'edit-notifications', 'delete-notifications',
-        ];
-
         $adminRole = Role::findOrCreate('admin', 'web');
-        foreach ($permissions as $item) {
+        foreach ($this->permissions as $item) {
             if (! Permission::where('name', $item)->exists()) {
                 $attrs = explode('-', $item, 2);
                 Permission::create(['name' => $item, 'title' => __("permissions.attributes.{$attrs[0]}", ['name' => __("permissions.{$attrs[1]}")])]);
             }
         }
-        $adminRole->givePermissionTo($permissions);
+        $adminRole->givePermissionTo($this->permissions);
         $adminRole->updateQuietly(['title' => 'مدیر']);
         $admin->assignRole('admin');
 

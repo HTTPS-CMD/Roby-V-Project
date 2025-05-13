@@ -65,6 +65,7 @@ export default defineConfig({
                         { name: "each", as: "_each" },
                         { name: "has", as: "_has" },
                         { name: "empty", as: "_empty" },
+                        { name: "groupBy", as: "_groupBy" },
                     ],
                 },
             ],

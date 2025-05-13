@@ -22,4 +22,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class)->except(['edit'])->names('roles')->middleware('role:admin');
+    Route::get('roles/get', [\App\Http\Controllers\Admin\RoleController::class, 'getIndex'])->name('roles.getIndex')->middleware('role:admin');
 });

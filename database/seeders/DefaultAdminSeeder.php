@@ -28,14 +28,14 @@ class DefaultAdminSeeder extends Seeder
         ]);
 
         $adminRole = Role::findOrCreate('admin', 'web');
-        $adminRole->updateQuietly(['title' => 'مدیر']);
         foreach ($this->permissions as $item) {
             if (! Permission::where('name', $item)->exists()) {
                 $attrs = explode('-', $item, 2);
                 Permission::create(['name' => $item, 'title' => __("permissions.attributes.{$attrs[0]}", ['name' => __("permissions.{$attrs[1]}")])]);
-                $adminRole->givePermissionTo($item);
             }
         }
+        $adminRole->givePermissionTo($this->permissions);
+        $adminRole->updateQuietly(['title' => 'مدیر']);
         $admin->assignRole('admin');
 
         $user = Role::findOrCreate('user', 'web');

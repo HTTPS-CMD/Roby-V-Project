@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { status } from "@/Composables/StaticVars";
 
-export type IUser = Omit<models.User, "roles"> & { roles: models.Role | null };
+export type IUser = Omit<models.User, "roles"> & {
+    roles: models.Role | null;
+    has_password: boolean;
+    password_confirm: string;
+};
 
 const props = withDefaults(
     defineProps<{ item?: IUser; roles: models.Role[] }>(),
@@ -11,9 +15,11 @@ const props = withDefaults(
             email: "",
             name: "",
             password: "",
+            password_confirm: "",
             status: true,
             profile_photo_url: "",
             roles: null,
+            has_password: true,
         }),
     }
 );
@@ -27,25 +33,56 @@ const modal = defineModel("modal", { default: false });
 </script>
 
 <template>
-    <FormModal route-name="users" :item="item" v-model:modal="modal">
-        <FormKit type="text" name="name" label="نام"></FormKit>
-        <FormKit type="email" name="email" label="ایمیل"></FormKit>
+    <FormModal
+        route-name="users"
+        :item="item"
+        v-model:modal="modal"
+        pronounce="کاربر"
+        v-slot="{ value }"
+    >
+        <FormKit
+            type="text"
+            name="name"
+            label="نام"
+            validation="required|string"
+        ></FormKit>
+        <FormKit
+            type="email"
+            name="email"
+            label="ایمیل"
+            validation="required|email"
+        ></FormKit>
         <FormKit
             type="select"
             :options="status"
             name="status"
             label="وضعیت"
         ></FormKit>
-        <FormKit
-            :type="isPassword.password ? 'password' : 'text'"
-            name="password"
-            label="گذرواژه"
-        ></FormKit>
-        <FormKit
-            :type="isPassword.conf_password ? 'password' : 'text'"
-            name="password"
-            label="تکرار گذرواژه"
-        ></FormKit>
+        <div class="col-span-full border-b border-gray-500" v-if="item?.id">
+            <FormKit
+                type="radio"
+                name="has_password"
+                label="گذرواژه"
+                :options="[
+                    { label: 'دارد', value: true },
+                    { label: 'ندارد', value: false },
+                ]"
+            ></FormKit>
+        </div>
+        <template v-if="value.has_password">
+            <FormKit
+                :type="isPassword.password ? 'password' : 'text'"
+                name="password"
+                label="گذرواژه"
+                validation="required"
+            ></FormKit>
+            <FormKit
+                :type="isPassword.conf_password ? 'password' : 'text'"
+                name="password_confirm"
+                label="تکرار گذرواژه"
+                validation="required|confirm"
+            ></FormKit>
+        </template>
         <FormKit
             type="select"
             :options="

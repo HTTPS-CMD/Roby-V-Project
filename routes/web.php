@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -53,12 +52,13 @@ Route::middleware([
 
     Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class)->except(['edit','create'])->names('faqs')->middleware('role:admin');
     Route::get('faqs/get', [\App\Http\Controllers\Admin\FaqController::class, 'getIndex'])->name('faqs.getIndex')->middleware('role:admin');
+    Route::put('faqs/sort', [\App\Http\Controllers\Admin\FaqController::class, 'sort'])->name('faqs.sort')->middleware('role:admin');
 
-    Route::controller(UserController::class)->prefix('users')->group(function () {
+    Route::controller(\App\Http\Controllers\Admin\UserController::class)->prefix('users')->group(function () {
         Route::get('/','index')->name('users.index')->middleware('permission:view-user');
         Route::get('get','getIndex')->name('users.data')->middleware('permission:view-user');
         Route::post('store','store')->name('users.store')->middleware('permission:add-user');
         Route::match(['patch','put'],'update/{id}','update')->name('users.update')->middleware('permission:edit-user');
-        Route::delete('{id}','destroy')->name('users.delete')->middleware('permission:delete-user');
+        Route::delete('{id}','destroy')->name('users.destroy')->middleware('permission:delete-user');
     });
 });

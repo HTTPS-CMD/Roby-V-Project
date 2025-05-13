@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import axios from "axios";
-import draggable from "vuedraggable";
+import { VueDraggableNext as Draggable } from "vue-draggable-next";
 
 const faq = reactive({
     item: undefined,
@@ -10,6 +10,8 @@ const faq = reactive({
 const faqs = ref<models.Faq[]>([]);
 const { canRedo, canUndo, clear, undo, redo, history } = useRefHistory(faqs);
 
+const sortedItems = ref<Pick<models.Faq, "id" | "sortable">[]>([]);
+
 onBeforeMount(() => {
     axios.get(route("faqs.getIndex")).then(({ data }) => {
         faqs.value = data;
@@ -17,11 +19,45 @@ onBeforeMount(() => {
     });
 });
 
+watch(
+    faqs,
+    (newValue, oldValue) => {
+        if (newValue) {
+            if (oldValue && oldValue !== newValue) {
+                sortedItems.value =
+                    newValue.map(({ id }, index) => ({
+                        id: id as number,
+                        sortable: index,
+                    })) || [];
+            }
+        }
+    },
+    { deep: true }
+);
+
 const save = () => {
-    axios.put(route("faqs.sort"), faqs.value).then(() => {
+    axios.put(route("faqs.sort"), sortedItems.value).then(() => {
         clear();
+        sortedItems.value = [];
     });
 };
+
+const deleteGenerate = reactive({
+    id: 0,
+    modal: false,
+});
+
+function onDelete() {
+    axios
+        .delete(route("faqs.destroy", deleteGenerate.id))
+        .then(({ data: res }) => {
+            _remove(faqs.value, ["id", deleteGenerate.id]);
+            clear();
+            useToast(res?.msg, { type: "success" });
+        })
+        .catch((err) => useToast(err.response.data.error, { type: "error" }));
+    deleteGenerate.modal = false;
+}
 </script>
 
 <template>
@@ -40,14 +76,18 @@ const save = () => {
                 </PrimaryButton>
             </div>
         </div>
-        <draggable class="flex flex-col gap-y-2" v-model="faqs">
+        <Draggable
+            class="flex flex-col gap-y-2"
+            v-model="faqs"
+            handle=".handler"
+        >
             <TransitionGroup>
                 <div
                     v-for="(item, index) in faqs"
                     :key="item.id"
-                    class="rounded-xl bg-slate-700 text-white p-2 flex items-center justify-between"
+                    class="rounded-xl bg-slate-700 hover:bg-slate-600 text-white p-2 flex items-center justify-between transition"
                 >
-                    <div class="flex items-center gap-x-2">
+                    <div class="flex items-center gap-x-2 handler cursor-move">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -85,7 +125,13 @@ const save = () => {
                     </div>
                 </div>
             </TransitionGroup>
-        </draggable>
+        </Draggable>
         <DialogsFaq v-model:modal="faq.modal" :item="faq.item" />
+        <DialogsAlert
+            title="حذف آیتم"
+            content="آیا مایل به حذف آیتم انتخابی هستید؟"
+            v-model:modal="deleteGenerate.modal"
+            @ok="onDelete"
+        />
     </AppLayout>
 </template>

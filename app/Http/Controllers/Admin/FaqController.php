@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FaqRequest;
 use App\Models\Faq;
 use App\Query\LikeFilter;
 use Illuminate\Http\Request;
@@ -43,9 +44,11 @@ class FaqController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FaqRequest $request)
     {
-        //
+        $item = Faq::create($request->validated());
+
+        return back();
     }
 
     /**
@@ -59,17 +62,25 @@ class FaqController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function sort(Request $request)
     {
-        //
+        Faq::massUpdate(
+            values: $request->all(),
+            uniqueBy: 'id'
+        );
+
+        return response()->noContent();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(FaqRequest $request, string $id)
     {
-        //
+        $item = Faq::findOrFail($id);
+        $item->update($request->validated());
+
+        return back();
     }
 
     /**
@@ -77,6 +88,9 @@ class FaqController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $item = Faq::findOrFail($id);
+        $item->delete();
+
+        return back();
     }
 }

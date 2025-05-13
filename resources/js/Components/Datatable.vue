@@ -88,9 +88,9 @@ const datatableRef = useTemplateRef<any>("datatable");
 const removeItems = (ids) => {
     if (!_rows.value?.data) return;
 
-    _rows.value.data = _rows.value.data.filter(({ id: itemId }) => {
-        return Array.isArray(ids) ? !ids.includes(itemId || 0) : itemId !== ids;
-    });
+    _remove(_rows.value.data, ({ id: itemId }) =>
+        _isArray(ids) ? _includes(ids, itemId || 0) : itemId === ids
+    );
 };
 
 const handleApiError = (err) => {
@@ -298,21 +298,12 @@ defineExpose({ data: _rows });
                 </div>
             </template>
         </VueDataTable>
-        <DialogModal
-            :show="deleteGenerate.modal"
-            @close="deleteGenerate.modal = false"
-        >
-            <template #title> حذف آیتم </template>
-            <template #content> آیا مایل به حذف آیتم انتخابی هستید؟ </template>
-            <template #footer>
-                <PrimaryButton @click="onDelete">تأیید</PrimaryButton>
-                <SecondaryButton
-                    @click="deleteGenerate.modal = false"
-                    class="ms-2"
-                    >خیر</SecondaryButton
-                >
-            </template>
-        </DialogModal>
+        <DialogsAlert
+            title="حذف آیتم"
+            content="آیا مایل به حذف آیتم انتخابی هستید؟"
+            v-model:modal="deleteGenerate.modal"
+            @ok="onDelete"
+        />
     </div>
 </template>
 

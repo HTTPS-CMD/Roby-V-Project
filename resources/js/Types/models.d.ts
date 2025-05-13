@@ -7,6 +7,7 @@ declare global {
             title: string;
             content: string;
             status: boolean;
+            sortable: number;
             created_at?: Date | null;
             updated_at?: Date | null;
         }
@@ -20,6 +21,8 @@ declare global {
             status: boolean;
             created_at?: Date | null;
             updated_at?: Date | null;
+            // relations
+            user?: User;
         }
 
         export interface Notification {
@@ -77,11 +80,26 @@ declare global {
             deleted_at?: Date | null;
             // relations
             users?: User[];
+            configs?: VConfig[];
+            tags?: Tag[];
+        }
+
+        export interface Tag {
+            // columns
+            id: number;
+            name: string[];
+            slug: string[];
+            type?: string | null;
+            order_column?: number | null;
+            created_at?: Date | null;
+            updated_at?: Date | null;
+            // mutators
+            translations: unknown;
         }
 
         export interface User {
             // columns
-            id?: number;
+            id: number;
             name: string;
             email: string;
             email_verified_at?: Date | null;

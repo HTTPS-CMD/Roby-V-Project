@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\ConfigCast;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class VConfig extends Model
@@ -38,6 +39,16 @@ class VConfig extends Model
 
     public function getIsExpiredAttribute()
     {
-        return ! Carbon::parse($this->expire)->isFuture();
+        return is_null($this->expire) or ! Carbon::parse($this->expire)->isFuture();
+    }
+
+    public function scopeBetweenCreated(Builder $query, string $start, string $end): void
+    {
+        $query->whereBetween('created_at', [Carbon::parse($start)->startOfDay(), Carbon::parse($end)->endOfDay()]);
+    }
+
+    public function scopeBetweenExpired(Builder $query, string $start, string $end): void
+    {
+        $query->whereBetween('expire', [Carbon::parse($start)->startOfDay(), Carbon::parse($end)->endOfDay()]);
     }
 }

@@ -80,6 +80,12 @@ const logout = () => {
                                 >
                                     سرورها
                                 </NavLink>
+                                <NavLink
+                                    :href="route('configs.index')"
+                                    :active="route().current('configs.index')"
+                                >
+                                    کانفیگ‌ها
+                                </NavLink>
                             </div>
                         </div>
 

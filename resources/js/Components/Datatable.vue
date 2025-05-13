@@ -265,6 +265,7 @@ defineExpose({ data: _rows });
             sortable
             isServerMode
             columnFilter
+            stickyHeader
             :sortColumn="params.sort_column"
             :sortDirection="params.sort_direction"
             @change="changeServer"

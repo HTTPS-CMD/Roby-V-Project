@@ -41,4 +41,12 @@ Route::middleware([
         Route::match(['put','patch'],'{id}', 'update')->name('servers.update')->middleware('permission:edit-news');
         Route::delete('{id}', 'destroy')->name('servers.destroy')->middleware('permission:delete-news');
     });
+
+    Route::controller(\App\Http\Controllers\Admin\ConfigController::class)->prefix('configs')->group(function () {
+        Route::get('/', 'index')->name('configs.index')->middleware('permission:view-configs');
+        Route::get('get', 'getIndex')->name('configs.getIndex')->middleware('permission:view-configs');
+        Route::post('store', 'store')->name('configs.store')->middleware('permission:add-configs');
+        Route::match(['put','patch'],'{id}', 'update')->name('configs.update')->middleware('permission:edit-configs');
+        Route::delete('{id}', 'destroy')->name('configs.destroy')->middleware('permission:delete-configs');
+    });
 });

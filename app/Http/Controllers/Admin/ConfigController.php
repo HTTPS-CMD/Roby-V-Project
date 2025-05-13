@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\NewsRequest;
-use App\Models\News;
+use App\Http\Requests\VConfigRequest;
+use App\Models\VConfig;
 use App\Query\LikeFilter;
-use GuzzleHttp\Psr7\Query;
-use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class NewsController extends Controller
+class ConfigController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return inertia('News');
+        return inertia('Configs');
     }
 
     /**
@@ -26,23 +24,37 @@ class NewsController extends Controller
      */
     public function getIndex()
     {
-        $items = QueryBuilder::for(News::class)->allowedFilters([
+        $items = QueryBuilder::for(VConfig::class)->allowedFilters([
             'id',
             AllowedFilter::custom('title',new LikeFilter),
-            AllowedFilter::custom('content',new LikeFilter),
-            'status',
-            AllowedFilter::callback('user_id',function($query,$value){
+            AllowedFilter::callback('server_id', function ($query, $value) {
+                $query->whereHas('server', function ($query) use ($value) {
+                    $query->where('name','like', "%$value%")
+                        ->orWhere('latin_name','like', "%$value%");
+                });
+            }),
+            AllowedFilter::callback('user_id', function ($query, $value) {
                 $query->whereHas('user', function ($query) use ($value) {
                     $query->where('name','like', "%$value%");
                 });
-            })
+            }),
+            'used',
+            'status',
+            'operator',
+            AllowedFilter::scope('between_expired'),
+            AllowedFilter::scope('between_created'),
         ])->allowedSorts([
             'id',
             'title',
+            'server_id',
+            'user_id',
+            'used',
             'status',
-            'user_id'
+            'operator',
+            'expire',
         ])->allowedIncludes([
-            'user'
+            'user',
+            'server',
         ])->defaultSort('-id')->paginate(default_paginate());
 
         return response($items);
@@ -51,9 +63,9 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(NewsRequest $request)
+    public function store(VConfigRequest $request)
     {
-        News::create(array_merge($request->validated(),['user_id'=>Auth::id()]));
+        $item = VConfig::create($request->validated());
 
         return back();
     }
@@ -77,9 +89,10 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(NewsRequest $request, string $id)
+    public function update(VConfigRequest $request, string $id)
     {
-        $item = News::findOrFail($id)->update($request->validated());
+        $item = VConfig::findOrFail($id);
+        $item->update($request->validated());
 
         return back();
     }
@@ -89,7 +102,7 @@ class NewsController extends Controller
      */
     public function destroy(string $id)
     {
-        News::findOrFail($id)->delete();
+        $item = VConfig::findOrFail($id)->delete();
 
         return back();
     }

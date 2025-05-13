@@ -8,6 +8,7 @@
     "devDependencies": {
         "@iconify-json/ph": "^1.2.2",
         "@inertiajs/vue3": "^2.0",
+        "@optimize-lodash/rollup-plugin": "^5.0.2",
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
         "@tailwindcss/vite": "^4.0.0",

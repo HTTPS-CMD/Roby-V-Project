@@ -11,6 +11,7 @@ class DefaultAdminSeeder extends Seeder
 {
     public $permissions = [
         'view-server', 'add-server', 'edit-server', 'delete-server',
+        'view-configs', 'add-configs', 'edit-configs', 'delete-configs',
         'view-user', 'add-user', 'edit-user', 'delete-user',
         'view-news', 'add-news', 'edit-news', 'delete-news',
         'view-notifications', 'add-notifications', 'edit-notifications', 'delete-notifications',

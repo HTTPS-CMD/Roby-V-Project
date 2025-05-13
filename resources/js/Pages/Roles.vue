@@ -20,7 +20,6 @@ const columns = [
         sort: false,
     },
     { field: "permissions", title: "دسترسی‌ها", filter: false, sort: false },
-    { field: "roles", title: "نقش", filter: false, sort: false },
 ];
 
 const role = reactive({
@@ -54,8 +53,13 @@ const role = reactive({
                     ></SecondaryButton>
                 </div>
             </template>
+            <template #with_count_users="{ value }">
+                <SecondaryButton class="rounded-full">
+                    {{ `${value.users_count} کاربر` }}
+                </SecondaryButton>
+            </template>
         </Datatable>
-        <DialogsUser
+        <DialogsRole
             v-model:modal="role.modal"
             :item="role.item"
             :permissions="groupedPermissions"

@@ -71,6 +71,7 @@ export default defineConfig({
                         { name: "isArray", as: "_isArray" },
                         { name: "includes", as: "_includes" },
                         { name: "map", as: "_map" },
+                        { name: "join", as: "_join" },
                     ],
                 },
             ],

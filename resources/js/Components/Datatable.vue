@@ -122,7 +122,13 @@ const deleteGenerate = reactive({
 
 function onDelete() {
     axios
-        .delete(`${props.api}/${deleteGenerate.id.toString()}`)
+        .delete(
+            `${props.api}/${
+                deleteGenerate.id === 0
+                    ? _join(_map(selectedRows.value, "id"), ",")
+                    : deleteGenerate.id
+            }`
+        )
         .then(({ data: res }) => {
             removeItems(deleteGenerate.id);
             datatableRef.value?.clearSelectedRows();

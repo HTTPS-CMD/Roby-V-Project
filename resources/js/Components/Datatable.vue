@@ -305,7 +305,9 @@ defineExpose({ data: _rows });
             <template #content> آیا مایل به حذف آیتم انتخابی هستید؟ </template>
             <template #footer>
                 <PrimaryButton @click="onDelete">تأیید</PrimaryButton>
-                <SecondaryButton @click="deleteGenerate.modal = false"
+                <SecondaryButton
+                    @click="deleteGenerate.modal = false"
+                    class="ms-2"
                     >خیر</SecondaryButton
                 >
             </template>
@@ -315,7 +317,36 @@ defineExpose({ data: _rows });
 
 <style>
 tbody tr td {
-    @apply !text-right;
+    @apply !text-right !text-white;
+}
+
+thead th {
+    @apply bg-slate-800 text-white;
+}
+
+.bh-table-responsive table th .bh-filter > .bh-form-control,
+.bh-table-responsive table th .bh-filter > button {
+    @apply !border !border-gray-700;
+}
+
+input.bh-form-control,
+.bh-pagesize,
+.bh-pagesize option {
+    @apply !bg-slate-700 !text-white border-slate-600;
+}
+
+thead th .bh-filter > button {
+    @apply !bg-slate-500;
+}
+
+.bh-table-responsive table.bh-table-hover tbody tr:hover {
+    @apply !bg-slate-700;
+}
+
+.bh-table-responsive table th .bh-filter > button svg,
+.bh-pagination,
+.bh-pagination .bh-page-item {
+    @apply !text-white;
 }
 
 .bh-pagination {

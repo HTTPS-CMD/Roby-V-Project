@@ -28,23 +28,30 @@ const server = reactive({
         <Datatable
             api="servers"
             :cols="columns"
-            :includes="['users']"
+            :includes="['users', 'tags']"
             @show-form="
                 (args) => {
                     server.item = args
-                        ? _omit(args, ['created_at', 'updated_at', 'users'])
+                        ? {
+                              ..._omit(args, [
+                                  'created_at',
+                                  'updated_at',
+                                  'tags',
+                              ]),
+                              tags: args.tags.map((item) => item.name.fa),
+                          }
                         : undefined;
                     server.modal = true;
                 }
             "
         >
-            <template #users="{ value }">
+            <template #tags="{ value }">
                 <div class="flex items-center gap-x-2 flex-wrap">
                     <SecondaryButton
                         class="rounded-full"
-                        v-for="(item, i) in value.users.split(0, 5)"
+                        v-for="(item, i) in value.tags"
                         :key="i"
-                        v-text="item.name"
+                        v-text="`#${item.name.fa}`"
                     ></SecondaryButton>
                 </div>
             </template>

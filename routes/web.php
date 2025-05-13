@@ -49,4 +49,7 @@ Route::middleware([
         Route::match(['put','patch'],'{id}', 'update')->name('configs.update')->middleware('permission:edit-configs');
         Route::delete('{id}', 'destroy')->name('configs.destroy')->middleware('permission:delete-configs');
     });
+
+    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class)->except(['edit','create'])->names('faqs')->middleware('role:admin');
+    Route::get('faqs/get', [\App\Http\Controllers\Admin\FaqController::class, 'getIndex'])->name('faqs.getIndex')->middleware('role:admin');
 });

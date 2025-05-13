@@ -86,6 +86,12 @@ const logout = () => {
                                 >
                                     کانفیگ‌ها
                                 </NavLink>
+                                <NavLink
+                                    :href="route('faqs.index')"
+                                    :active="route().current('faqs.index')"
+                                >
+                                    سوالات متداول
+                                </NavLink>
                             </div>
                         </div>
 

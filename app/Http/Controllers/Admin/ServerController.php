@@ -39,7 +39,7 @@ class ServerController extends Controller
             'status',
             'created_at',
             'updated_at',
-        ])->allowedIncludes(['users','configs'])->defaultSort('-id')
+        ])->allowedIncludes(['users','configs','tags'])->defaultSort('-id')
             ->withCount('configs')->paginate(default_paginate());
 
         return response($items);
@@ -50,8 +50,9 @@ class ServerController extends Controller
      */
     public function store(ServerRequest $request)
     {
-        $item = Server::create($request->except(['users']));
+        $item = Server::create($request->except(['users','tags']));
         $item->users()->sync($request->input('users'));
+        $item->syncTags($request->input('tags'));
 
         return back();
     }
@@ -79,7 +80,8 @@ class ServerController extends Controller
     {
         $item = Server::findOrFail($id);
         $item->users()->sync($request->input('users'));
-        $item->update($request->except(['users']));
+        $item->syncTags($request->input('tags'));
+        $item->update($request->except(['users','tags']));
 
         return back();
     }

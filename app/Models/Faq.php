@@ -10,6 +10,7 @@ class Faq extends Model
         'title',
         'content',
         'status',
+        'sortable'
     ];
 
     protected $casts = ['status' => 'boolean'];

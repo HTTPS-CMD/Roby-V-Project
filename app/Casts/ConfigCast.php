@@ -32,6 +32,7 @@ class ConfigCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return json_decode(AesCrypto::decrypt($value, $key), true);
+        // return json_decode(AesCrypto::decrypt($value, $key), true);
+        return $value;
     }
 }

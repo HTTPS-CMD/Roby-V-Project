@@ -52,10 +52,12 @@ const modal = defineModel("modal", { default: false });
             name="location"
             label="مکان"
             :options="
-                countries.map(({ name_fa, code }) => ({
-                    label: name_fa,
-                    value: code.toLowerCase(),
-                }))
+                countries
+                    .filter(({ name_fa }) => !!name_fa.length)
+                    .map(({ name_fa, code }) => ({
+                        label: name_fa,
+                        value: code.toLowerCase(),
+                    }))
             "
         />
         <FormKit type="select" name="status" label="وضعیت" :options="status" />

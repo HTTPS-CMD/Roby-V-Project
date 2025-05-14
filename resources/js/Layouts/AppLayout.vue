@@ -89,7 +89,7 @@ const logout = () => {
                                         route().current('notifications.index')
                                     "
                                 >
-                                    اعلانات
+                                    اعلان‌ها
                                 </NavLink>
                                 <NavLink
                                     :href="route('faqs.index')"

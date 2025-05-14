@@ -38,7 +38,10 @@ const role = reactive({
             @show-form="
                 (args) => {
                     role.item = args
-                        ? _pick(args, ['id', 'name', 'title', 'permissions'])
+                        ? {
+                              ..._pick(args, ['id', 'name', 'title']),
+                              permissions: _map(args.permissions, 'name'),
+                          }
                         : undefined;
                     role.modal = true;
                 }

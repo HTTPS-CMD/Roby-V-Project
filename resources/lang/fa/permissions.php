@@ -18,4 +18,6 @@ return [
     'notifications' => 'اعلان‌ها',
     'server' => 'سرور‌ها',
     'news' => 'اخبار',
+    'configs'=>'کانفیگ‌ها',
+    'notifications'=>'اعلان‌ها'
 ];

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { status } from "@/Composables/StaticVars";
 import CountryFlag from "vue-country-flag-next";
+
+const props = defineProps<{
+    operators: string[];
+}>();
 
 const columns = [
     { field: "title", title: "عنوان", filter: true, sort: true },
@@ -75,6 +78,10 @@ async function copyConfig(config: string) {
                 {{ _find(status, ["value", value.status])?.label }}
             </template>
         </Datatable>
-        <DialogsConfig v-model:modal="config.modal" :item="config.item" />
+        <DialogsConfig
+            v-model:modal="config.modal"
+            :item="config.item"
+            :operators="operators"
+        />
     </AppLayout>
 </template>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OperatorEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VConfigRequest;
 use App\Models\VConfig;
@@ -16,7 +17,9 @@ class ConfigController extends Controller
      */
     public function index()
     {
-        return inertia('Configs');
+        $operators = OperatorEnum::values();
+
+        return inertia('Configs',['operators'=>$operators]);
     }
 
     /**

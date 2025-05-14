@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { status } from "@/Composables/StaticVars";
 
-export type IUser = Omit<models.User, "roles"> & {
+export type IUser = Omit<models.User, "roles" | "id"> & {
     roles: models.Role | null;
     has_password: boolean;
     password_confirm: string;
+    id?: number;
 };
 
 const props = withDefaults(

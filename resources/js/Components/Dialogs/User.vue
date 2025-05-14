@@ -4,7 +4,7 @@ import { status } from "@/Composables/StaticVars";
 export type IUser = Omit<models.User, "roles" | "id"> & {
     roles: models.Role | null;
     has_password: boolean;
-    password_confirm: string;
+    password_confirmation: string;
     id?: number;
 };
 
@@ -16,7 +16,7 @@ const props = withDefaults(
             email: "",
             name: "",
             password: "",
-            password_confirm: "",
+            password_confirmation: "",
             status: true,
             profile_photo_url: "",
             roles: null,
@@ -79,9 +79,9 @@ const modal = defineModel("modal", { default: false });
             ></FormKit>
             <FormKit
                 :type="isPassword.conf_password ? 'password' : 'text'"
-                name="password_confirm"
+                name="password_confirmation"
                 label="تکرار گذرواژه"
-                validation="required|confirm"
+                validation="required"
             ></FormKit>
         </template>
         <FormKit

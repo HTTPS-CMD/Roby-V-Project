@@ -53,9 +53,9 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-        News::create(array_merge($request->validated(),['user_id'=>Auth::id()]));
+        $item = News::create(array_merge($request->validated(),['user_id'=>Auth::id()]));
 
-        return back();
+        return back()->with('msg',__('common.stored',['name'=>$item->title]));
     }
 
     /**
@@ -81,7 +81,7 @@ class NewsController extends Controller
     {
         $item = News::findOrFail($id)->update($request->validated());
 
-        return back();
+        return back()->with('msg',__('common.updated',['name'=>$item->title]));
     }
 
     /**
@@ -91,6 +91,6 @@ class NewsController extends Controller
     {
         News::findOrFail($id)->delete();
 
-        return back();
+        return back()->with('msg',__('common.removed.item',['name'=>'خبر']));
     }
 }

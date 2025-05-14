@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFormKitContextById } from "@formkit/vue";
+import type { IToast } from "@/App.vue";
 
 const props = withDefaults(
     defineProps<{
@@ -12,10 +12,11 @@ const props = withDefaults(
 
 const modal = defineModel("modal", { default: false });
 
-const form = useForm(props.item);
+const form = ref(props.item);
 
 function submitHandler(fields, node) {
-    form[!props.item?.id ? "post" : "patch"](
+    const f = useForm(form.value);
+    f[!props.item?.id ? "post" : "patch"](
         route(
             props.routeName.concat(!props.item?.id ? ".store" : ".update"),
             props.item?.id ? { id: props.item.id } : undefined
@@ -23,15 +24,15 @@ function submitHandler(fields, node) {
     )(fields, node);
 }
 
-const id = useId();
-const formContext = useFormKitContextById(id);
+watch(modal, (v) => {
+    form.value = toRaw(props.item);
+    if (!v) form.value = {};
+});
 
-watch(modal, () => {
-    if (formContext.value) {
-        formContext.value.value = toRaw(props.item);
-        formContext.value.node.input(toRaw(props.item));
-    }
-    //     form.node.value?.input(toRaw(props.item));
+const { props: pageProps } = usePage();
+
+watch(pageProps.flash as IToast, (v) => {
+    if (v.msg) modal.value = false;
 });
 </script>
 
@@ -45,20 +46,14 @@ watch(modal, () => {
             </div>
         </template>
         <template #content>
-            <FormKit
-                :id="id"
-                type="form"
-                @submit="submitHandler"
-                :plugins="[form.plugin]"
-            >
+            <FormKit type="form" @submit="submitHandler" v-model="form">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                    <slot :value="formContext?.value"></slot>
+                    <slot :value="form"></slot>
                 </div>
                 <template #submit>
                     <FormKit
                         type="submit"
                         :label="props.item?.id ? 'ویرایش' : 'ثبت'"
-                        :disabled="form.processing.value"
                     ></FormKit>
                 </template>
             </FormKit>

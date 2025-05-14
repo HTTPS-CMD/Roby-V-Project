@@ -62,7 +62,7 @@ class RoleController extends Controller
         ]);
         $created->syncPermissions(Arr::map($request->input('permissions'), fn ($item) => ! is_string($item) ? $item['name'] : $item));
 
-        return response(['msg' => __('common.stored', ['name' => __('common.role')]), 'item' => Role::with(['permissions' => fn ($query) => $query->select(['id', 'name', 'title'])])->find($created->id)]);
+        return back()->with('msg',__('common.stored', ['name' => __('common.role')]));
     }
 
     /**
@@ -101,7 +101,7 @@ class RoleController extends Controller
 
         $item->find($id)->syncPermissions(Arr::map($request->input('permissions'), fn ($item) => ! is_string($item) ? $item['name'] : $item));
 
-        return response(['msg' => __('common.updated', ['name' => __('common.role')]), 'item' => $item->find($id)]);
+        return back()->with('msg',__('common.updated', ['name' => __('common.role')]));
     }
 
     /**
@@ -120,6 +120,6 @@ class RoleController extends Controller
         }
         $role->delete();
 
-        return response(['msg' => __('common.removed.item', ['name' => __('common.role')])]);
+        return back()->with('msg',__('common.removed.item', ['name' => __('common.role')]));
     }
 }

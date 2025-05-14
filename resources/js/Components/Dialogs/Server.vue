@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { status } from "@/Composables/StaticVars";
-
 export type IServer = Omit<models.Server, "id">;
 
 const props = withDefaults(
@@ -24,8 +22,6 @@ const props = withDefaults(
 );
 
 const modal = defineModel("modal", { default: false });
-
-// TODO : users
 </script>
 
 <template>
@@ -68,6 +64,13 @@ const modal = defineModel("modal", { default: false });
             :options="tags"
             multiple
         />
-        <!-- <FormKit type="select" name="users" label="کاربران" :options="users" /> -->
+        <SelectApi
+            name="users"
+            label="کاربران"
+            item-key="name"
+            item-value="id"
+            route-name="users"
+            search-key="name"
+        />
     </FormModal>
 </template>

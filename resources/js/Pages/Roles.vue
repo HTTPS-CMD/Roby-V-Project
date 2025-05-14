@@ -13,12 +13,12 @@ const groupedPermissions = computed(() => _groupBy(props.permissions, "group"));
 const columns = [
     { field: "title", title: "عنوان", filter: true, sort: true },
     { field: "name", title: "نام", filter: true, sort: true },
-    {
-        field: "with_count_users",
-        title: "تعداد کاربران",
-        filter: false,
-        sort: false,
-    },
+    // {
+    //     field: "with_count_users",
+    //     title: "تعداد کاربران",
+    //     filter: false,
+    //     sort: false,
+    // },
     { field: "permissions", title: "دسترسی‌ها", filter: false, sort: false },
 ];
 
@@ -48,14 +48,18 @@ const role = reactive({
             "
         >
             <template #permissions="{ value }">
-                <div class="flex items-center gap-x-2 flex-wrap">
+                <div
+                    class="flex items-center gap-x-2 flex-wrap"
+                    v-if="value.permissions.length"
+                >
                     <SecondaryButton
                         class="rounded-full"
-                        v-for="(item, i) in value.permissions.split(0, 6)"
+                        v-for="(item, i) in value.permissions.slice(0, 6)"
                         :key="i"
                         v-text="item.title"
                     ></SecondaryButton>
                 </div>
+                <span v-else>-</span>
             </template>
             <template #with_count_users="{ value }">
                 <SecondaryButton class="rounded-full">

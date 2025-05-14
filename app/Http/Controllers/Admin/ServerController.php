@@ -17,7 +17,7 @@ class ServerController extends Controller
      */
     public function index()
     {
-        $tags = Tag::withType('server');
+        $tags = Tag::withType('server')->get();
 
         return inertia('Servers',['tags'=>$tags]);
     }
@@ -35,6 +35,7 @@ class ServerController extends Controller
             'created_at',
             'updated_at',
         ])->allowedSorts([
+            'id',
             'name',
             'latin_name',
             'traffic',

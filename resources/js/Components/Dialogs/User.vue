@@ -36,7 +36,11 @@ const modal = defineModel("modal", { default: false });
 <template>
     <FormModal
         route-name="users"
-        :item="item"
+        :item="
+            !item.roles
+                ? { ..._omit(item, ['roles']), roles: props.roles[0].name }
+                : item
+        "
         v-model:modal="modal"
         pronounce="کاربر"
         v-slot="{ value }"

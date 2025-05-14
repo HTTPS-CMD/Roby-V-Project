@@ -25,18 +25,7 @@ class FaqController extends Controller
      */
     public function getIndex()
     {
-        $items = QueryBuilder::for(Faq::class)->allowedFilters([
-            'id',
-            AllowedFilter::custom('title',new LikeFilter),
-            AllowedFilter::custom('content',new LikeFilter),
-            'status',
-        ])->allowedSorts([
-            'id',
-            'title',
-            'content',
-            'status',
-            'sortable',
-        ])->defaultSort('sortable')->paginate(default_paginate());
+        $items = Faq::orderBy('sortable')->get();
 
         return response()->json($items);
     }

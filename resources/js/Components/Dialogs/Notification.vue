@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { status } from "@/Composables/StaticVars";
+import SelectApi from "../SelectApi.vue";
 
 export type INotification = Omit<models.Notification, "id" | "users"> & {
     users: number[];
@@ -23,8 +24,6 @@ const props = withDefaults(
 );
 
 const modal = defineModel("modal", { default: false });
-
-// TODO : users
 </script>
 
 <template>
@@ -38,13 +37,15 @@ const modal = defineModel("modal", { default: false });
         <FormKit type="text" name="link" label="لینک" />
         <FormKit type="select" name="status" label="وضعیت" :options="status" />
         <FormKit type="checkbox" name="all_users" label="نمایش برای همه" />
-        <!-- <FormKit
-            type="select"
+        <SelectApi
+            route-name="users"
+            search-key="name"
+            item-key="name"
+            item-value="id"
             name="users"
             label="نمایش برای کاربران"
-            :options="users"
             multiple
-        /> -->
+        />
         <div class="col-span-full">
             <FormKit type="textarea" name="content" label="متن" />
         </div>

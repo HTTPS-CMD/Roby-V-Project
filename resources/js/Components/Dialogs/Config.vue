@@ -19,7 +19,7 @@ const props = withDefaults(
         item: () => ({
             id: undefined,
             title: "",
-            operator: props.operators[0],
+            operator: "",
             status: status[0].value,
             expire: null,
             server_id: null,
@@ -31,14 +31,16 @@ const props = withDefaults(
 );
 
 const modal = defineModel("modal", { default: false });
-
-// TODO : servers, users
 </script>
 
 <template>
     <FormModal
         route-name="configs"
-        :item="item"
+        :item="
+            !item.operator.length
+                ? { ..._omit(item, ['operator']), operator: props.operators[0] }
+                : item
+        "
         pronounce="کانفیگ"
         v-model:modal="modal"
     >
@@ -56,19 +58,23 @@ const modal = defineModel("modal", { default: false });
             name="expire"
             label="انقضاء"
             validation="nullable|date_after:now"
-        />>
-        <FormKit
-            type="select"
+        />
+        <SelectApi
+            route-name="servers"
+            search-key="name"
+            item-key="name"
+            item-value="id"
             name="server_id"
             label="سرور"
-            :options="[]"
             validation="required"
         />
-        <FormKit
-            type="select"
+        <SelectApi
+            route-name="users"
+            search-key="name"
+            item-key="name"
+            item-value="id"
             name="user_id"
             label="کاربر"
-            :options="[]"
             validation="required"
         />
         <FormKit

@@ -241,9 +241,7 @@ const exportTable = (type: string) => {
     }
 };
 
-const selectedRows = computed(() => {
-    return datatableRef.value?.getSelectedRows() || [];
-});
+const selectedRows = ref([]);
 
 onMounted(() => fetchData());
 
@@ -259,6 +257,7 @@ defineExpose({ data: _rows });
                     جدید
                 </PrimaryButton>
                 <DangerButton
+                    class="ms-2"
                     v-if="!noSelectable"
                     :disabled="!selectedRows.length"
                     @click="
@@ -312,6 +311,7 @@ defineExpose({ data: _rows });
             :sortColumn="params.sort_column"
             :sortDirection="params.sort_direction"
             @change="changeServer"
+            @rowSelect="selectedRows = $event"
         >
             <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
                 <slot
@@ -373,7 +373,8 @@ tbody tr td {
     @apply !text-right !text-white;
 }
 
-thead th {
+thead th,
+.bh-bg-blue-light {
     @apply bg-slate-800 text-white;
 }
 

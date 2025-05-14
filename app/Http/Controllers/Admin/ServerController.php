@@ -95,8 +95,22 @@ class ServerController extends Controller
      */
     public function destroy(string $id)
     {
-        $item = Server::findOrFail($id)->delete();
+        Server::withTrashed()->whereIn('id', array_map('intval', explode(',', $id)))->each(function ($item) {
+            if (is_null($item->deleted_at)) {
+                $item->delete();
+            } else {
+                $item->forceDelete();
+            }
+        });
 
-        return back()->with('msg',__('common.remove.item',['name'=>'سرور']));
+        return back()->with('msg',str_contains($id, ',') ? __('common.removed.items') : __('common.removed.item', ['name' => 'سرور']));
+    }
+
+    public function restore($id)
+    {
+        Server::onlyTrashed()->whereIn('id', str_contains($id, ',') ? explode(',', $id) : [$id])
+            ->restore();
+
+        return back()->with('msg',__('common.restored', ['name' => str_contains($id, ',') ? 'سرورها' : 'سرور']));
     }
 }

@@ -18,6 +18,7 @@ interface IProps {
     noEditable?: boolean;
     noTimestamp?: boolean;
     noSelectable?: boolean;
+    restorable?: boolean;
 }
 
 const props = defineProps<IProps>();
@@ -243,6 +244,16 @@ const exportTable = (type: string) => {
 
 const selectedRows = ref([]);
 
+function onRestore(id: number | number[]) {
+    axios
+        .get(`${props.api}/restore/${id.toString()}`)
+        .then((res: any) => {
+            removeItems(id);
+            useToast(res?.msg, { type: "success" });
+        })
+        .catch(handleApiError);
+}
+
 onMounted(() => fetchData());
 
 defineExpose({ data: _rows });
@@ -270,6 +281,15 @@ defineExpose({ data: _rows });
                     <ph-trash class="size-5" />
                     {{ `حذف (${selectedRows.length})` }}
                 </DangerButton>
+                <SecondaryButton
+                    class="ms-2"
+                    v-if="restorable"
+                    :disabled="!selectedRows.length"
+                    @click="onRestore(_map(selectedRows, 'id'))"
+                >
+                    <ph-arrow-clockwise class="size-5" />
+                    {{ `بازگردانی (${selectedRows.length})` }}
+                </SecondaryButton>
             </div>
             <SecondaryButton
                 type="button"
@@ -338,6 +358,12 @@ defineExpose({ data: _rows });
             </template>
             <template #actions="{ value }">
                 <div class="flex items-center gap-x-2 justify-evenly">
+                    <SecondaryButton
+                        @click="onRestore(value.id)"
+                        v-if="restorable"
+                    >
+                        <ph-arrow-clockwise />
+                    </SecondaryButton>
                     <SecondaryButton
                         @click="emit('showForm', value)"
                         v-if="!noEditable"

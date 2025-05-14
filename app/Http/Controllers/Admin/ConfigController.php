@@ -105,12 +105,8 @@ class ConfigController extends Controller
      */
     public function destroy(string $id)
     {
-        $item = VConfig::withTrashed()->whereIn('id', array_map('intval', explode(',', $id)))->each(function ($item) {
-            if (is_null($item->deleted_at)) {
-                $item->delete();
-            } else {
-                $item->forceDelete();
-            }
+        $item = VConfig::whereIn('id', array_map('intval', explode(',', $id)))->each(function ($item) {
+            $item->delete();
         });
 
         return back()->with('msg',str_contains($id, ',') ? __('common.removed.items') : __('common.removed.item', ['name' => 'کانفیگ']));

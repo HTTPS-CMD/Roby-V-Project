@@ -89,12 +89,8 @@ class NewsController extends Controller
      */
     public function destroy(string $id)
     {
-        News::withTrashed()->whereIn('id', array_map('intval', explode(',', $id)))->each(function ($item) {
-            if (is_null($item->deleted_at)) {
-                $item->delete();
-            } else {
-                $item->forceDelete();
-            }
+        News::whereIn('id', array_map('intval', explode(',', $id)))->each(function ($item) {
+            $item->delete();
         });
 
         return back()->with('msg',str_contains($id, ',') ? __('common.removed.items') : __('common.removed.item', ['name' => 'خبر']));

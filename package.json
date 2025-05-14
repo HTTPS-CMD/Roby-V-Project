@@ -38,6 +38,7 @@
         "@formkit/inertia": "^0.1.5",
         "@formkit/vue": "^1.6.9",
         "@vueuse/core": "^13.1.0",
+        "date-fns": "^4.1.0",
         "vue-country-flag-next": "^2.3.2",
         "vue-draggable-next": "^2.2.1",
         "vue3-toastify": "^0.2.8"

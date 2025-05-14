@@ -20,6 +20,49 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(route("logout"));
 };
+
+const links = computed(() => [
+    {
+        label: "داشبورد",
+        link: route("dashboard"),
+        active: route().current("dashboard"),
+    },
+    {
+        label: "کاربران",
+        link: route("users.index"),
+        active: route().current("users.index"),
+    },
+    {
+        label: "نقش‌ها",
+        link: route("roles.index"),
+        active: route().current("roles.index"),
+    },
+    {
+        label: "اخبار",
+        link: route("news.index"),
+        active: route().current("news.index"),
+    },
+    {
+        label: "سرورها",
+        link: route("servers.index"),
+        active: route().current("servers.index"),
+    },
+    {
+        label: "کانفیگ‌ها",
+        link: route("configs.index"),
+        active: route().current("configs.index"),
+    },
+    {
+        label: "اعلان‌ها",
+        link: route("notifications.index"),
+        active: route().current("notifications.index"),
+    },
+    {
+        label: "سوالات متداول",
+        link: route("faqs.index"),
+        active: route().current("faqs.index"),
+    },
+]);
 </script>
 
 <template>
@@ -48,54 +91,11 @@ const logout = () => {
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    v-for="item in links"
+                                    :href="item.link"
+                                    :active="item.active"
+                                    v-text="item.label"
                                 >
-                                    داشبورد
-                                </NavLink>
-                                <NavLink
-                                    :href="route('users.index')"
-                                    :active="route().current('users.index')"
-                                >
-                                    کاربران
-                                </NavLink>
-                                <NavLink
-                                    :href="route('roles.index')"
-                                    :active="route().current('roles.index')"
-                                >
-                                    نقش‌ها
-                                </NavLink>
-                                <NavLink
-                                    :href="route('news.index')"
-                                    :active="route().current('news.index')"
-                                >
-                                    اخبار
-                                </NavLink>
-                                <NavLink
-                                    :href="route('servers.index')"
-                                    :active="route().current('servers.index')"
-                                >
-                                    سرورها
-                                </NavLink>
-                                <NavLink
-                                    :href="route('configs.index')"
-                                    :active="route().current('configs.index')"
-                                >
-                                    کانفیگ‌ها
-                                </NavLink>
-                                <NavLink
-                                    :href="route('notifications.index')"
-                                    :active="
-                                        route().current('notifications.index')
-                                    "
-                                >
-                                    اعلان‌ها
-                                </NavLink>
-                                <NavLink
-                                    :href="route('faqs.index')"
-                                    :active="route().current('faqs.index')"
-                                >
-                                    سوالات متداول
                                 </NavLink>
                             </div>
                         </div>
@@ -383,10 +383,11 @@ const logout = () => {
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            v-for="item in links"
+                            :href="item.link"
+                            :active="item.active"
+                            v-text="item.label"
                         >
-                            Dashboard
                         </ResponsiveNavLink>
                     </div>
 

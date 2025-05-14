@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { status } from "@/Composables/StaticVars";
+import { addDays, format } from "date-fns";
 
 export type IConfig = Omit<
     models.VConfig,
@@ -30,6 +31,13 @@ const props = withDefaults(
 );
 
 const modal = defineModel("modal", { default: false });
+
+const dates = computed(() =>
+    [1, 3, 7, 30, 60, 90, 120, 180, 365].map((day, i) => ({
+        label: day < 30 ? day + " روز" : Math.round(day / 30) + " ماه",
+        value: format(addDays(new Date(), day), "yyyy-MM-dd"),
+    }))
+);
 </script>
 
 <template>
@@ -37,7 +45,11 @@ const modal = defineModel("modal", { default: false });
         route-name="configs"
         :item="
             !item.operator.length
-                ? { ..._omit(item, ['operator']), operator: props.operators[0] }
+                ? {
+                      ..._omit(item, ['operator', 'expire']),
+                      operator: props.operators[0],
+                      expire: dates[0].value,
+                  }
                 : item
         "
         pronounce="کانفیگ"
@@ -52,12 +64,7 @@ const modal = defineModel("modal", { default: false });
             validation="required"
         />
         <FormKit type="select" name="status" label="وضعیت" :options="status" />
-        <FormKit
-            type="date"
-            name="expire"
-            label="انقضاء"
-            validation="nullable|date_after:now"
-        />
+        <FormKit type="select" name="expire" label="انقضاء" :options="dates" />
         <SelectApi
             route-name="servers"
             search-key="name"

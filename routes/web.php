@@ -23,8 +23,14 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class)->except(['edit','create'])->names('roles')->middleware('role:admin');
-    Route::get('roles/get', [\App\Http\Controllers\Admin\RoleController::class, 'getIndex'])->name('roles.getIndex')->middleware('role:admin');
+    Route::controller(\App\Http\Controllers\Admin\RoleController::class)->prefix('roles')->middleware('role:admin')
+        ->group(function () {
+            Route::get('/', 'index')->name('roles.index');
+            Route::get('get', 'getIndex')->name('roles.getIndex');
+            Route::post('store', 'store')->name('roles.store');
+            Route::match(['put','patch'],'{id}', 'update')->name('roles.update');
+            Route::delete('{id}', 'destroy')->name('roles.destroy');
+        });
 
     Route::controller(\App\Http\Controllers\Admin\NewsController::class)->prefix('news')->group(function () {
         Route::get('/', 'index')->name('news.index')->middleware('permission:view-news');
@@ -50,13 +56,19 @@ Route::middleware([
         Route::delete('{id}', 'destroy')->name('configs.destroy')->middleware('permission:delete-configs');
     });
 
-    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class)->except(['edit','create'])->names('faqs')->middleware('role:admin');
-    Route::get('faqs/get', [\App\Http\Controllers\Admin\FaqController::class, 'getIndex'])->name('faqs.getIndex')->middleware('role:admin');
-    Route::put('faqs/sort', [\App\Http\Controllers\Admin\FaqController::class, 'sort'])->name('faqs.sort')->middleware('role:admin');
+    Route::controller(\App\Http\Controllers\Admin\FaqController::class)->prefix('faqs')->middleware('role:admin')
+        ->group(function () {
+            Route::get('/','index')->name('faqs.index');
+            Route::get('get','getIndex')->name('faqs.getIndex');
+            Route::post('store','store')->name('faqs.store');
+            Route::put('faqs/sort', 'sort')->name('faqs.sort');
+            Route::match(['patch','put'],'update/{id}','update')->name('faqs.update');
+            Route::delete('{id}','destroy')->name('faqs.destroy');
+        });
 
     Route::controller(\App\Http\Controllers\Admin\UserController::class)->prefix('users')->group(function () {
         Route::get('/','index')->name('users.index')->middleware('permission:view-user');
-        Route::get('get','getIndex')->name('users.data')->middleware('permission:view-user');
+        Route::get('get','getIndex')->name('users.getIndex')->middleware('permission:view-user');
         Route::post('store','store')->name('users.store')->middleware('permission:add-user');
         Route::match(['patch','put'],'update/{id}','update')->name('users.update')->middleware('permission:edit-user');
         Route::delete('{id}','destroy')->name('users.destroy')->middleware('permission:delete-user');
@@ -64,7 +76,7 @@ Route::middleware([
 
     Route::controller(\App\Http\Controllers\Admin\NotificationController::class)->prefix('notifications')->group(function () {
         Route::get('/','index')->name('notifications.index')->middleware('permission:view-notifications');
-        Route::get('get','getIndex')->name('notifications.data')->middleware('permission:view-notifications');
+        Route::get('get','getIndex')->name('notifications.getIndex')->middleware('permission:view-notifications');
         Route::post('store','store')->name('notifications.store')->middleware('permission:add-notifications');
         Route::match(['patch','put'],'update/{id}','update')->name('notifications.update')->middleware('permission:edit-notifications');
         Route::delete('{id}','destroy')->name('notifications.destroy')->middleware('permission:delete-notifications');

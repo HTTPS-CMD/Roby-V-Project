@@ -37,6 +37,7 @@ const modal = defineModel("modal", { default: false });
             help="نام لاتین نقش به صورت role-1"
             validation="required|alpha_dash"
         />
+        <div></div>
         <div v-for="(item, index) in _values(permissions)" :key="index">
             <span>{{ item[0].group_name }}</span>
             <FormKit

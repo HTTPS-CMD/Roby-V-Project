@@ -70,7 +70,7 @@ class ConfigController extends Controller
     {
         $item = VConfig::create($request->validated());
 
-        return back();
+        return back()->with('msg',__('common.stored',['name'=>$item->title]));
     }
 
     /**
@@ -97,7 +97,7 @@ class ConfigController extends Controller
         $item = VConfig::findOrFail($id);
         $item->update($request->validated());
 
-        return back();
+        return back()->with('msg',__('common.updated',['name'=>$item->title]));;
     }
 
     /**
@@ -107,6 +107,6 @@ class ConfigController extends Controller
     {
         $item = VConfig::findOrFail($id)->delete();
 
-        return back();
+        return back()->with('msg',__('common.removed.item',['name'=>'کانفیگ']));
     }
 }

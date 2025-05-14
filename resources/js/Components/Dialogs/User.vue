@@ -4,7 +4,7 @@ import { status } from "@/Composables/StaticVars";
 export type IUser = Omit<models.User, "roles" | "id"> & {
     roles: models.Role | null;
     has_password: boolean;
-    password_confirm: string;
+    password_confirmation: string;
     id?: number;
 };
 
@@ -16,7 +16,7 @@ const props = withDefaults(
             email: "",
             name: "",
             password: "",
-            password_confirm: "",
+            password_confirmation: "",
             status: true,
             profile_photo_url: "",
             roles: null,
@@ -36,7 +36,11 @@ const modal = defineModel("modal", { default: false });
 <template>
     <FormModal
         route-name="users"
-        :item="item"
+        :item="
+            !item.roles
+                ? { ..._omit(item, ['roles']), roles: props.roles[0].name }
+                : item
+        "
         v-model:modal="modal"
         pronounce="کاربر"
         v-slot="{ value }"
@@ -79,9 +83,9 @@ const modal = defineModel("modal", { default: false });
             ></FormKit>
             <FormKit
                 :type="isPassword.conf_password ? 'password' : 'text'"
-                name="password_confirm"
+                name="password_confirmation"
                 label="تکرار گذرواژه"
-                validation="required|confirm"
+                validation="required"
             ></FormKit>
         </template>
         <FormKit

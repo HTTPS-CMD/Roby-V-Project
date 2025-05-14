@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Query\LikeFilter;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -52,11 +53,11 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->validate(['password' => ['required_if:has_password,true', 'confirmed'], 'mobile' => 'unique:users']);
+        $request->validate(['password' => ['required_if:has_password,true', 'confirmed',Password::default()]]);
         $item = User::create($request->except(['roles']));
         $item->syncRoles($request->input('roles'));
 
-        return back();
+        return back()->with('msg',__('common.stored',['name'=>__('validation.attributes.user')]));
     }
 
     /**
@@ -85,7 +86,7 @@ class UserController extends Controller
         $item->syncRoles($request->input('roles'));
         $item->update($request->except(['roles']));
 
-        return response(['msg'=>__('common.updated',['name'=>__('validation.attributes.user')]),'item'=>$item->fresh(['roles'])]);
+        return back()->with('msg',__('common.updated',['name'=>__('validation.attributes.user')]));
     }
 
     /**
@@ -95,6 +96,6 @@ class UserController extends Controller
     {
         User::destroy($id);
 
-        return response(['msg' => __('common.removed.item', ['name' => __('validation.attributes.user')])]);
+        return back()->with('msg',__('common.removed.item', ['name' => __('validation.attributes.user')]));
     }
 }

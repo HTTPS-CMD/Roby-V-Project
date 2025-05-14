@@ -62,19 +62,34 @@ function onDelete() {
 
 <template>
     <AppLayout>
-        <div class="flex items-center gap-x-2">
+        <div class="flex items-center gap-x-2 mt-4 mx-6">
+            <div class="grow">
+                <PrimaryButton @click="faq.modal = true">
+                    <ph-plus-circle-duotone />
+                    سوال جدید
+                </PrimaryButton>
+                <PrimaryButton
+                    class="ms-2"
+                    @click="save"
+                    :disabled="!history.length"
+                >
+                    <ph-check-bold />
+                    ذخیره
+                </PrimaryButton>
+            </div>
             <SecondaryButton :disabled="!canUndo" @click="undo">
                 <ph-arrow-arc-right />
             </SecondaryButton>
             <SecondaryButton :disabled="!canRedo" @click="redo">
                 <ph-arrow-arc-left />
             </SecondaryButton>
-            <div class="grow">
-                <PrimaryButton @click="save" :disabled="!history.length">
-                    <ph-check-bold />
-                    "ذخیره"
-                </PrimaryButton>
-            </div>
+        </div>
+        <div
+            class="flex items-center gap-x-2 justify-center text-white"
+            v-if="!faqs?.length"
+        >
+            <ph-warning-diamond-duotone />
+            متاسفانه سوالی طرح نشده
         </div>
         <Draggable
             class="flex flex-col gap-y-2"

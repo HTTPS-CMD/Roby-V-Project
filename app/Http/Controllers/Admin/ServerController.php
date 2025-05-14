@@ -17,7 +17,7 @@ class ServerController extends Controller
      */
     public function index()
     {
-        $tags = Tag::withType('server');
+        $tags = Tag::withType('server')->get();
 
         return inertia('Servers',['tags'=>$tags]);
     }
@@ -35,6 +35,7 @@ class ServerController extends Controller
             'created_at',
             'updated_at',
         ])->allowedSorts([
+            'id',
             'name',
             'latin_name',
             'traffic',
@@ -57,7 +58,7 @@ class ServerController extends Controller
         $item->users()->sync($request->input('users'));
         $item->syncTags($request->input('tags'));
 
-        return back();
+        return back()->with('msg',__('common.stored',['name'=>$item->name]));
     }
 
     /**
@@ -86,7 +87,7 @@ class ServerController extends Controller
         $item->syncTags($request->input('tags'));
         $item->update($request->except(['users','tags']));
 
-        return back();
+        return back()->with('msg',__('common.updated',['name'=>$item->name]));
     }
 
     /**
@@ -96,6 +97,6 @@ class ServerController extends Controller
     {
         $item = Server::findOrFail($id)->delete();
 
-        return back();
+        return back()->with('msg',__('common.remove.item',['name'=>'سرور']));
     }
 }

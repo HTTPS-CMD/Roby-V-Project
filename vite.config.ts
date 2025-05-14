@@ -73,6 +73,7 @@ export default defineConfig({
                         { name: "map", as: "_map" },
                         { name: "join", as: "_join" },
                         { name: "values", as: "_values" },
+                        { name: "keys", as: "_keys" },
                     ],
                 },
             ],

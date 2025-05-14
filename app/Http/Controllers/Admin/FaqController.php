@@ -25,18 +25,7 @@ class FaqController extends Controller
      */
     public function getIndex()
     {
-        $items = QueryBuilder::for(Faq::class)->allowedFilters([
-            'id',
-            AllowedFilter::custom('title',new LikeFilter),
-            AllowedFilter::custom('content',new LikeFilter),
-            'status',
-        ])->allowedSorts([
-            'id',
-            'title',
-            'content',
-            'status',
-            'sortable',
-        ])->defaultSort('sortable')->paginate(default_paginate());
+        $items = Faq::orderBy('sortable')->get();
 
         return response()->json($items);
     }
@@ -48,7 +37,7 @@ class FaqController extends Controller
     {
         $item = Faq::create($request->validated());
 
-        return back();
+        return back()->with('msg',__('common.stored',['name'=>$item->title]));
     }
 
     /**
@@ -80,7 +69,7 @@ class FaqController extends Controller
         $item = Faq::findOrFail($id);
         $item->update($request->validated());
 
-        return back();
+        return back()->with('msg',__('common.updated',['name'=>$item->title]));
     }
 
     /**
@@ -91,6 +80,6 @@ class FaqController extends Controller
         $item = Faq::findOrFail($id);
         $item->delete();
 
-        return back();
+        return back()->with('msg',__('common.removed.item',['name'=>'سوال']));
     }
 }

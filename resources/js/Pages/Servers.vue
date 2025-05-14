@@ -45,6 +45,7 @@ const server = reactive({
                     server.modal = true;
                 }
             "
+            restorable
         >
             <template #tags="{ value }">
                 <div class="flex items-center gap-x-2 flex-wrap">

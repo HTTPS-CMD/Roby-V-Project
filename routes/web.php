@@ -46,6 +46,7 @@ Route::middleware([
         Route::post('store', 'store')->name('servers.store')->middleware('permission:add-news');
         Route::match(['put','patch'],'{id}', 'update')->name('servers.update')->middleware('permission:edit-news');
         Route::delete('{id}', 'destroy')->name('servers.destroy')->middleware('permission:delete-news');
+        Route::get('restore/{id}', 'restore')->name('servers.restore')->middleware('permission:edit-news');
     });
 
     Route::controller(\App\Http\Controllers\Admin\ConfigController::class)->prefix('configs')->group(function () {

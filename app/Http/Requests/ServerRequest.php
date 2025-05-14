@@ -28,6 +28,7 @@ class ServerRequest extends FormRequest
             'traffic'=>'numeric|nullable',
             'location'=>'required|string|max:255',
             'status'=>'required|boolean',
+            'config_encrypted'=>'required|string',
         ];
     }
 }

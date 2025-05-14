@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\ConfigCast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -16,13 +15,11 @@ class VConfig extends Model
         'used',
         'status',
         'operator',
-        'config_encrypted',
         'expire',
     ];
 
     protected $casts = [
         'status' => 'boolean',
-        'config_encrypted' => ConfigCast::class,
     ];
 
     protected $appends = ['is_expired'];

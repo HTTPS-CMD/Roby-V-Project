@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { status } from "@/Composables/StaticVars";
+
 export type IServer = Omit<models.Server, "id">;
 
 const props = withDefaults(
@@ -11,7 +13,7 @@ const props = withDefaults(
             id: undefined,
             name: "",
             latin_name: "",
-            config: "",
+            config_encrypted: "",
             traffic: 0,
             location: "",
             status: status[0].value,
@@ -40,7 +42,7 @@ const modal = defineModel("modal", { default: false });
         />
         <FormKit
             type="textarea"
-            name="config"
+            name="config_encrypted"
             label="کانفیگ"
             validation="required"
         />

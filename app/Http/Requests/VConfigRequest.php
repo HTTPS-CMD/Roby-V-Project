@@ -30,7 +30,6 @@ class VConfigRequest extends FormRequest
             'used'=>'nullable|numeric',
             'status'=>'required|boolean',
             'operator'=>'required|in'.implode(',',OperatorEnum::values()),
-            'config_encrypted'=>'required|string',
             'expire'=>'nullable|date',
         ];
     }

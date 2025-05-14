@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('used')->default(0);
             $table->boolean('status')->default(true);
             $table->enum('operator', OperatorEnum::values())->default(OperatorEnum::All);
-            $table->longText('config_encrypted');
             $table->date('expire')->nullable();
             $table->timestamps();
         });

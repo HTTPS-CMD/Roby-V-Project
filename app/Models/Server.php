@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\ConfigCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Tags\HasTags;
@@ -16,10 +17,12 @@ class Server extends Model
         'traffic',
         'location',
         'status',
+        'config_encrypted',
     ];
 
     protected $casts = [
         'status' => 'boolean',
+        'config_encrypted' => ConfigCast::class,
     ];
 
     public function users()

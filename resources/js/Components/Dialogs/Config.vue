@@ -23,7 +23,6 @@ const props = withDefaults(
             status: status[0].value,
             expire: null,
             server_id: null,
-            config_encrypted: "",
             used: 0,
             user_id: null,
         }),
@@ -78,15 +77,9 @@ const modal = defineModel("modal", { default: false });
             validation="required"
         />
         <FormKit
-            type="textarea"
-            name="config_encrypted"
-            label="کانفیگ"
-            validation="required"
-        />
-        <FormKit
             type="number"
             name="used"
-            label="استفاده شده"
+            label="حجم ترافیک"
             help="از مگابایت به بالا"
             suffix="MB"
         />

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('traffic')->default(0)->comment('enter by mb');
             $table->string('location');
             $table->boolean('status')->default(true);
+            $table->longText('config_encrypted');
             $table->timestamps();
             $table->softDeletes();
         });

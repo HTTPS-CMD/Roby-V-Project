@@ -15,6 +15,7 @@ declare global {
         export interface News {
             // columns
             id: number;
+            user_id: number;
             title: string;
             slug: string;
             content: string;
@@ -71,10 +72,10 @@ declare global {
             id: number;
             name: string;
             latin_name: string;
-            config: string;
             traffic: number;
             location: string;
             status: boolean;
+            config_encrypted: string;
             created_at?: Date | null;
             updated_at?: Date | null;
             deleted_at?: Date | null;
@@ -131,7 +132,6 @@ declare global {
             used: number;
             status: boolean;
             operator: string;
-            config_encrypted: unknown;
             expire?: Date | null;
             created_at?: Date | null;
             updated_at?: Date | null;

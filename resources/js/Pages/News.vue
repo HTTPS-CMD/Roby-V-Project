@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { status } from "@/Composables/StaticVars";
-
 const columns = [
     { field: "title", title: "عنوان", filter: true, sort: true },
     { field: "user_id", title: "ایجاد کننده", filter: true, sort: true },

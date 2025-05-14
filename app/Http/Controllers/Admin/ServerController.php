@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServerRequest;
 use App\Models\Server;
+use App\Models\Tag;
 use App\Query\LikeFilter;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -16,7 +17,9 @@ class ServerController extends Controller
      */
     public function index()
     {
-        return inertia('Servers');
+        $tags = Tag::withType('server');
+
+        return inertia('Servers',['tags'=>$tags]);
     }
 
     /**

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { countries, status } from "@/Composables/StaticVars";
 import CountryFlag from "vue-country-flag-next";
+
+const props = defineProps<{ tags: models.Tag[] }>();
 
 const columns = [
     { field: "name", title: "نام", filter: true, sort: true },
@@ -74,6 +75,10 @@ const server = reactive({
                 {{ `${value.with_count_configs} کانفیگ` }}
             </template>
         </Datatable>
-        <DialogsServer v-model:modal="server.modal" :item="server.item" />
+        <DialogsServer
+            v-model:modal="server.modal"
+            :item="server.item"
+            :tags="_map(props.tags, 'name.fa')"
+        />
     </AppLayout>
 </template>

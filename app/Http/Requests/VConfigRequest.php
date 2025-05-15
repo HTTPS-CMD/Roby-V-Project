@@ -27,7 +27,7 @@ class VConfigRequest extends FormRequest
             'title'=>'required|min:3',
             'server_id'=>'required|filled|exists:servers,id',
             'user_id'=>'required|filled|exists:users,id',
-            'used'=>'nullable|numeric',
+            'total'=>'nullable|numeric',
             'status'=>'required|boolean',
             'operator'=>'required|in'.implode(',',OperatorEnum::values()),
             'expire'=>'nullable|date',

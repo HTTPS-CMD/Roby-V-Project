@@ -4,11 +4,12 @@ import { addDays, format } from "date-fns";
 
 export type IConfig = Omit<
     models.VConfig,
-    "id" | "user_id" | "server_id" | "is_expired"
+    "id" | "user_id" | "server_id" | "is_expired" | "total"
 > & {
     id?: number;
     server_id: number | null;
     user_id: number | null;
+    total: number | null;
 };
 
 const props = withDefaults(
@@ -24,7 +25,7 @@ const props = withDefaults(
             status: status[0].value,
             expire: null,
             server_id: null,
-            used: 0,
+            total: null,
             user_id: null,
         }),
     }
@@ -85,7 +86,7 @@ const dates = computed(() =>
         />
         <FormKit
             type="number"
-            name="used"
+            name="total"
             label="حجم ترافیک"
             help="از مگابایت به بالا"
             suffix="MB"

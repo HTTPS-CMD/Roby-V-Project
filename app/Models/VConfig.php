@@ -12,7 +12,7 @@ class VConfig extends Model
         'title',
         'server_id',
         'user_id',
-        'used',
+        'total',
         'status',
         'operator',
         'expire',

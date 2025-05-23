@@ -55,6 +55,7 @@ const dates = computed(() =>
         "
         pronounce="کانفیگ"
         v-model:modal="modal"
+        v-slot="{ value }"
     >
         <FormKit type="text" name="title" label="عنوان" validation="required" />
         <FormKit
@@ -74,6 +75,7 @@ const dates = computed(() =>
             name="server_id"
             label="سرور"
             validation="required"
+            v-model:model-value="value.server_id"
         />
         <SelectApi
             route-name="users"
@@ -83,6 +85,7 @@ const dates = computed(() =>
             name="user_id"
             label="کاربر"
             validation="required"
+            v-model:model-value="value.user_id"
         />
         <FormKit
             type="number"

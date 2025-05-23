@@ -13,6 +13,8 @@ const props = withDefaults(
     { itemKey: "label", itemValue: "value" }
 );
 
+const value = defineModel({ default: null });
+
 const search = ref();
 
 const data = ref<TPageProps>();
@@ -21,6 +23,14 @@ const page = ref(1);
 
 const loading = ref(false);
 const endData = ref(false);
+
+watch(
+    data,
+    (v) => {
+        if (v?.data.length) value.value = v.data[0][props.itemValue];
+    },
+    { once: true }
+);
 
 async function fetchData() {
     loading.value = true;
@@ -90,5 +100,6 @@ watchDebounced(
                 value: item[itemValue],
             })) || []
         "
+        v-model="value"
     ></FormKit>
 </template>

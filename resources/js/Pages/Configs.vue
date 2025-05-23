@@ -11,7 +11,7 @@ const columns = [
     { field: "user_id", title: "کاربر", filter: true, sort: true },
     { field: "used", title: "استفاده شده", filter: true, sort: true },
     { field: "operator", title: "اپراتور", filter: true, sort: true },
-    { field: "config", title: "کانفیگ", filter: true, sort: true },
+    { field: "config", title: "کانفیگ", filter: false, sort: false },
     { field: "expire", title: "انقضاء", filter: true, sort: true },
     { field: "status", title: "وضعیت", filter: true, sort: true },
 ];
@@ -64,15 +64,16 @@ async function copyConfig(config: string) {
             </template>
             <template #config="{ value }">
                 <div
-                    @click="copyConfig(value.config)"
-                    class="border border-dashed border-gray-500 hover:border-solid hover:border-green-500 px-2 py-1.5 rounded-full cursor-pointer hover:text-green-500 transition"
+                    @click="copyConfig(value.server.config_encrypted)"
+                    class="border border-dashed border-gray-200 hover:border-solid hover:border-green-500 px-2 py-1.5 rounded-full cursor-pointer hover:text-green-500 transition flex items-center gap-x-2"
                 >
                     <ph-copy-simple-light />
                     <span class="text-xs">کپی کانفیگ</span>
                 </div>
             </template>
             <template #expire="{ value }">
-                {{ $d(new Date(value.expire), "date") }}
+                {{ $d(new Date(value.expire), "date") }} -&nbsp;
+                {{ value.is_expired ? "منقضی شده" : "منقضی نشده" }}
             </template>
             <template #status="{ value }">
                 {{ _find(status, ["value", value.status])?.label }}

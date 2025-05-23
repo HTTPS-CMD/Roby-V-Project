@@ -29,7 +29,7 @@ class VConfigRequest extends FormRequest
             'user_id'=>'required|filled|exists:users,id',
             'total'=>'nullable|numeric',
             'status'=>'required|boolean',
-            'operator'=>'required|in'.implode(',',OperatorEnum::values()),
+            'operator'=>'required|in:'.implode(',',OperatorEnum::values()),
             'expire'=>'nullable|date',
         ];
     }

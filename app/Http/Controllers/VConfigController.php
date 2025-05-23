@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VConfigController extends Controller
 {
@@ -12,7 +13,9 @@ class VConfigController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(['configs'=>VConfig::where('user_id',Auth::id())/*->where('status',true)
+          ->whereColumn('usage','<','total')
+       ->whereDate('expire','>',now())*/->get()->map(fn($item) => $item->server->config_encrypted)]);
     }
 
     /**

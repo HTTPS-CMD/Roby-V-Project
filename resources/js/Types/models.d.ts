@@ -129,7 +129,8 @@ declare global {
             title: string;
             server_id: number;
             user_id: number;
-            total: number;
+            total: number | null;
+            usage: number | null;
             status: boolean;
             operator: string;
             expire?: Date | null;

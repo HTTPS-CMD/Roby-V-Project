@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('server_id')->constrained('servers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('total')->nullable();
+            $table->integer('usage')->nullable();
             $table->boolean('status')->default(true);
             $table->enum('operator', OperatorEnum::values())->default(OperatorEnum::All);
             $table->date('expire')->nullable();

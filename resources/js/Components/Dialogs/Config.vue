@@ -27,6 +27,7 @@ const props = withDefaults(
             server_id: null,
             total: null,
             user_id: null,
+            usage: null,
         }),
     }
 );
@@ -91,6 +92,13 @@ const dates = computed(() =>
             type="number"
             name="total"
             label="حجم ترافیک"
+            help="از مگابایت به بالا"
+            suffix="MB"
+        />
+        <FormKit
+            type="number"
+            name="usage"
+            label="حجم استفاده شده"
             help="از مگابایت به بالا"
             suffix="MB"
         />

@@ -18,6 +18,9 @@ export default {
             fontFamily: {
                 sans: ["iransans", ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                primary: "#590a15",
+            },
         },
     },
 

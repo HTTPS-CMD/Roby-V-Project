@@ -57,7 +57,7 @@ class UserController extends Controller
         $item = User::create($request->except(['roles']));
         $item->syncRoles($request->input('roles'));
 
-        return back()->with('msg',__('common.stored',['name'=>__('validation.attributes.user')]));
+        return back()->with(['msg'=>__('common.stored',['name'=>__('validation.attributes.user')]),'item'=>User::with(['roles'])->find($item->id)]);
     }
 
     /**
@@ -86,7 +86,7 @@ class UserController extends Controller
         $item->syncRoles($request->input('roles'));
         $item->update($request->except(['roles']));
 
-        return back()->with('msg',__('common.updated',['name'=>__('validation.attributes.user')]));
+        return back()->with(['msg'=>__('common.updated',['name'=>__('validation.attributes.user')]),'item'=>$item->fresh(['roles'])]);
     }
 
     /**

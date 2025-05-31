@@ -45,7 +45,7 @@ class NotificationController extends Controller
     {
         $item = Notification::create($request->validated());
 
-        return back()->with('msg',__('common.stored',['name'=>$item->title]));
+        return back()->with(['msg'=>__('common.stored',['name'=>$item->title]),'item'=>Notification::with(['users'])->find($item->id)]);
     }
 
     /**
@@ -72,7 +72,7 @@ class NotificationController extends Controller
         $item = Notification::findOrFail($id);
         $item->update($request->validated());
 
-        return back()->with('msg',__('common.updated',['name'=>$item->title]));
+        return back()->with(['msg'=>__('common.updated',['name'=>$item->title]),'item'=>$item->fresh(['users'])]);
     }
 
     /**

@@ -70,7 +70,10 @@ class ConfigController extends Controller
     {
         $item = VConfig::create($request->validated());
 
-        return back()->with('msg',__('common.stored',['name'=>$item->title]));
+        return back()->with(['msg'=>__('common.stored',['name'=>$item->title]),'item'=>VConfig::with([
+            'user',
+            'server',
+        ])->find($item->id)]);
     }
 
     /**
@@ -97,7 +100,10 @@ class ConfigController extends Controller
         $item = VConfig::findOrFail($id);
         $item->update($request->validated());
 
-        return back()->with('msg',__('common.updated',['name'=>$item->title]));;
+        return back()->with(['msg'=>__('common.updated',['name'=>$item->title]),'item'=>$item->fresh([
+            'user',
+            'server',
+        ])]);
     }
 
     /**

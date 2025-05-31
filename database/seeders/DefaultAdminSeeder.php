@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -21,21 +22,27 @@ class DefaultAdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $role = Role::findOrCreate('admin', 'web');
+        $role->updateQuietly(['title' => 'مدیر']);
+
+        foreach ($this->permissions as $item) {
+            if (! Permission::where('name', $item)->exists()) {
+                $attrs = explode('-', $item, 2);
+                $permission = Permission::create(['name' => $item, 'title' => __("permissions.attributes.{$attrs[0]}", ['name' => __("permissions.{$attrs[1]}")])]);
+                DB::table('model_has_permissions')->insert(
+                    [
+                        'permission_id'=>$permission->id,
+                        'model_type'=>'App\\Models\\Role',
+                        'model_id'=>1
+                    ]
+                );
+            }
+        }
         $admin = User::findOrCreate('admin@gmail.com', [
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('@12345Bb'),
         ]);
-
-        $adminRole = Role::findOrCreate('admin', 'web');
-        foreach ($this->permissions as $item) {
-            if (! Permission::where('name', $item)->exists()) {
-                $attrs = explode('-', $item, 2);
-                Permission::create(['name' => $item, 'title' => __("permissions.attributes.{$attrs[0]}", ['name' => __("permissions.{$attrs[1]}")])]);
-            }
-        }
-        $adminRole->givePermissionTo($this->permissions);
-        $adminRole->updateQuietly(['title' => 'مدیر']);
         $admin->assignRole('admin');
 
         $user = Role::findOrCreate('user', 'web');

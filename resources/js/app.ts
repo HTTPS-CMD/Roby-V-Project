@@ -10,6 +10,8 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/src/js";
 import Vue3Toastify, { type ToastContainerOptions } from "vue3-toastify";
 import { plugin as formPlugin, defaultConfig } from "@formkit/vue";
+import { createPinia } from "pinia";
+
 import App from "./App.vue";
 import { rootClasses } from "./Utils/formkit.theme";
 
@@ -29,6 +31,8 @@ createInertiaApp({
     },
     // @ts-expect-error
     setup({ el, App, props, plugin }) {
+        const pinia = createPinia();
+
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
@@ -46,6 +50,7 @@ createInertiaApp({
                     },
                 })
             )
+            .use(pinia)
             .component("Link", Link)
             .component("Head", Head)
             .mount(el);

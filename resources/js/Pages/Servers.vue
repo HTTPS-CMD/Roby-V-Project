@@ -6,12 +6,6 @@ const props = defineProps<{ tags: models.Tag[] }>();
 const columns = [
     { field: "name", title: "نام", filter: true, sort: true },
     { field: "latin_name", title: "نام لاتین", filter: true, sort: true },
-    {
-        field: "with_count_configs",
-        title: "‌کانفیگ‌ها",
-        filter: false,
-        sort: false,
-    },
     { field: "traffic", title: "ترافیک", filter: false, sort: true },
     { field: "location", title: "منطقه", filter: true, sort: true },
     { field: "status", title: "وضعیت", filter: true, sort: true },
@@ -47,6 +41,18 @@ const server = reactive({
             "
             restorable
         >
+            <template #users="{ value }">
+                <Link
+                    :href="
+                        route('servers.index', {
+                            _query: { 'filter[users]': item.id },
+                        })
+                    "
+                    v-for="item in value.users"
+                    class="hover:text-primary"
+                    >{{ item.name }}</Link
+                >
+            </template>
             <template #tags="{ value }">
                 <div class="flex items-center gap-x-2 flex-wrap">
                     <SecondaryButton

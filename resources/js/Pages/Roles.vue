@@ -61,11 +61,6 @@ const role = reactive({
                 </div>
                 <span v-else>-</span>
             </template>
-            <template #with_count_users="{ value }">
-                <SecondaryButton class="rounded-full">
-                    {{ `${value.with_count_users} کاربر` }}
-                </SecondaryButton>
-            </template>
         </Datatable>
         <DialogsRole
             v-model:modal="role.modal"

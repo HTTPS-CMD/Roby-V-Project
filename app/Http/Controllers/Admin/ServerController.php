@@ -7,6 +7,7 @@ use App\Http\Requests\ServerRequest;
 use App\Models\Server;
 use App\Models\Tag;
 use App\Query\LikeFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -31,6 +32,11 @@ class ServerController extends Controller
             AllowedFilter::custom('name',new LikeFilter),
             AllowedFilter::custom('latin_name',new LikeFilter),
             AllowedFilter::custom('location',new LikeFilter),
+            AllowedFilter::callback('users',function (Builder $query,$value) {
+                $query->whereHas('users', function ($q) use ($value) {
+                    $q->whereIn('users.id', is_array($value) ? $value : [$value]);
+                });
+            }),
             'status',
             'created_at',
             'updated_at',
@@ -58,7 +64,7 @@ class ServerController extends Controller
         $item->users()->sync($request->input('users'));
         $item->syncTags($request->input('tags'));
 
-        return back()->with('msg',__('common.stored',['name'=>$item->name]));
+        return back()->with(['msg'=>__('common.stored',['name'=>$item->name]),'item'=>$item]);
     }
 
     /**
@@ -87,7 +93,7 @@ class ServerController extends Controller
         $item->syncTags($request->input('tags'));
         $item->update($request->except(['users','tags']));
 
-        return back()->with('msg',__('common.updated',['name'=>$item->name]));
+        return back()->with(['msg'=>__('common.updated',['name'=>$item->name]),'item'=>$item->fresh(['users', 'tags'])]);
     }
 
     /**

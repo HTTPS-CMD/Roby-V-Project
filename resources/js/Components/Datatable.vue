@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import axios from "axios";
 import VueDataTable from "@bhplugin/vue3-datatable";
-import { stringify } from "qs";
+import { stringify, parse } from "qs";
+import { useDatatable } from "@/Stores/datatable";
 
 interface IColumn {
     field: string;
@@ -60,21 +61,30 @@ const baseUrl = `${props.api}/get`;
 
 const activeUrl = ref(baseUrl);
 
-const _rows = ref<TPageProps>();
+const store = useDatatable();
+const { rows: _rows } = storeToRefs(store);
+
 const isLoading = ref(false);
 
+const route = useUrlSearchParams();
+
 function fetchData() {
+    const paramItems = parse(route as any);
     activeUrl.value = baseUrl.concat(
         "?" +
             stringify(
                 {
                     per_page: params.pagesize,
                     page: params.current_page,
-                    filter: Object.fromEntries(
-                        params.column_filters
-                            .filter((item) => item.value)
-                            .map(({ value, field }) => [field, value])
-                    ),
+                    filter: {
+                        ...Object.fromEntries(
+                            params.column_filters
+                                .filter((item) => item.value)
+                                .map(({ value, field }) => [field, value])
+                        ),
+                        // @ts-expect-error
+                        ...(!_isEmpty(paramItems) ? paramItems.filter : {}),
+                    },
                     sort: `${params.sort_direction === "asc" ? "" : "-"}${
                         params.sort_column
                     }`,
@@ -104,7 +114,7 @@ const changeServer = (data: any) => {
 
 const datatableRef = useTemplateRef<any>("datatable");
 
-const removeItems = (ids) => {
+const removeItems = (ids: number[] | number) => {
     if (!_rows.value?.data) return;
 
     _remove(_rows.value.data, ({ id: itemId }) =>
@@ -120,6 +130,8 @@ const deleteGenerate = reactive({
     id: 0,
     modal: false,
 });
+
+const selectedRows = debouncedRef([], 1000);
 
 function onDelete() {
     axios
@@ -242,8 +254,6 @@ const exportTable = (type: string) => {
     }
 };
 
-const selectedRows = ref([]);
-
 function onRestore(id: number | number[]) {
     axios
         .get(`${props.api}/restore/${id.toString()}`)
@@ -360,7 +370,7 @@ defineExpose({ data: _rows });
                 <div class="flex items-center gap-x-2 justify-evenly">
                     <SecondaryButton
                         @click="onRestore(value.id)"
-                        v-if="restorable"
+                        v-if="restorable && value.deleted_at"
                     >
                         <ph-arrow-clockwise />
                     </SecondaryButton>

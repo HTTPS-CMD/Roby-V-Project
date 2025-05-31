@@ -41,12 +41,12 @@ Route::middleware([
     });
 
     Route::controller(\App\Http\Controllers\Admin\ServerController::class)->prefix('servers')->group(function () {
-        Route::get('/', 'index')->name('servers.index')->middleware('permission:view-news');
-        Route::get('get', 'getIndex')->name('servers.getIndex')->middleware('permission:view-news');
-        Route::post('store', 'store')->name('servers.store')->middleware('permission:add-news');
-        Route::match(['put','patch'],'{id}', 'update')->name('servers.update')->middleware('permission:edit-news');
-        Route::delete('{id}', 'destroy')->name('servers.destroy')->middleware('permission:delete-news');
-        Route::get('restore/{id}', 'restore')->name('servers.restore')->middleware('permission:edit-news');
+        Route::get('/', 'index')->name('servers.index')->middleware('permission:view-server');
+        Route::get('get', 'getIndex')->name('servers.getIndex')->middleware('permission:view-server');
+        Route::post('store', 'store')->name('servers.store')->middleware('permission:add-server');
+        Route::delete('{id}', 'destroy')->name('servers.destroy')->middleware('permission:delete-server');
+        Route::match(['put','patch'],'{id}', 'update')->name('servers.update')->middleware('permission:edit-server');
+        Route::get('restore/{id}', 'restore')->name('servers.restore')->middleware('permission:edit-server');
     });
 
     Route::controller(\App\Http\Controllers\Admin\ConfigController::class)->prefix('configs')->group(function () {

@@ -29,13 +29,14 @@ class DefaultAdminSeeder extends Seeder
             if (! Permission::where('name', $item)->exists()) {
                 $attrs = explode('-', $item, 2);
                 $permission = Permission::create(['name' => $item, 'title' => __("permissions.attributes.{$attrs[0]}", ['name' => __("permissions.{$attrs[1]}")])]);
-                DB::table('model_has_permissions')->insert(
-                    [
-                        'permission_id'=>$permission->id,
-                        'model_type'=>'App\\Models\\Role',
-                        'model_id'=>1
-                    ]
-                );
+                $role->givePermissionTo($permission);
+                // DB::table('model_has_permissions')->insert(
+                //     [
+                //         'permission_id'=>$permission->id,
+                //         'model_type'=>'App\\Models\\Role',
+                //         'model_id'=>1
+                //     ]
+                // );
             }
         }
         $admin = User::findOrCreate('admin@gmail.com', [

@@ -15,7 +15,7 @@ const props = withDefaults(
             latin_name: "",
             config_encrypted: "",
             traffic: 0,
-            location: "",
+            location: countries[0].name,
             status: status[0].value,
             users: [],
             tags: [],

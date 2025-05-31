@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { IToast } from "@/App.vue";
+import type { IFlash } from "@/App.vue";
+import { useDatatable } from "@/Stores/datatable";
 
 const props = withDefaults(
     defineProps<{
@@ -14,25 +15,43 @@ const modal = defineModel("modal", { default: false });
 
 const form = ref(props.item);
 
+const store = useDatatable();
+
+const { rows: _rows } = storeToRefs(store);
+
 function submitHandler(fields, node) {
     const f = useForm(form.value);
     f[!props.item?.id ? "post" : "patch"](
         route(
             props.routeName.concat(!props.item?.id ? ".store" : ".update"),
             props.item?.id ? { id: props.item.id } : undefined
-        )
+        ),
+        {
+            onSuccess({ props }: { props: any }) {
+                console.log(props);
+
+                if (props.flash.msg) modal.value = false;
+                if (props.flash.item) {
+                    if (
+                        props.flash.item.created_at ===
+                        props.flash.item.updated_at
+                    ) {
+                        _rows.value?.data.unshift(props.flash.item);
+                    } else {
+                        let item = _rows.value?.data.find(
+                            ({ id }) => id === props.flash.item.id
+                        );
+                        item = props.flash.item;
+                    }
+                }
+            },
+        }
     )(fields, node);
 }
 
 watch(modal, (v) => {
     form.value = toRaw(props.item);
     if (!v) form.value = {};
-});
-
-const { props: pageProps } = usePage();
-
-watch(pageProps.flash as IToast, (v) => {
-    if (v.msg) modal.value = false;
 });
 </script>
 

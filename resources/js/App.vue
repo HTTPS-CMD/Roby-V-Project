@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-export interface IToast {
+export interface IFlash {
     msg?: string;
     error?: string;
+    item?: any;
 }
 
 const { props } = usePage();
 
 watch(
-    () => props.flash as IToast,
+    () => props.flash as IFlash,
     (v) => {
         if (v.msg) {
             useToast(v.msg, { type: "success" });

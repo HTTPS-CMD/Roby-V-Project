@@ -18,6 +18,8 @@ watch(
         }
     }
 );
+
+useFavicon("./logo.png");
 </script>
 
 <template>

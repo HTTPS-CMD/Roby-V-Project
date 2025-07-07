@@ -15,6 +15,7 @@ const user = reactive({
 </script>
 
 <template>
+    <Head title="کاربران"></Head>
     <AppLayout>
         <Datatable
             api="users"

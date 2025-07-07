@@ -81,12 +81,26 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate(['password' => ['required_if:has_password,true', 'confirmed'], 'mobile' => 'unique:users']);
+        $request->validate([
+            'password' => ['required_if:has_password,true', 'confirmed'],
+            'mobile' => 'unique:users',
+        ]);
+
         $item = User::find($id);
+
+        if (!$request->boolean('has_password')) {
+            $request->request->remove('password');
+        }
+
         $item->syncRoles($request->input('roles'));
+
         $item->update($request->except(['roles']));
 
-        return back()->with(['msg'=>__('common.updated',['name'=>__('validation.attributes.user')]),'item'=>$item->fresh(['roles'])]);
+        return back()->with([
+            'msg' => __('common.updated', ['name' => __('validation.attributes.user')]),
+            'item' => $item->fresh(['roles']),
+        ]);
+
     }
 
     /**

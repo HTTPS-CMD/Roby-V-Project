@@ -18,6 +18,7 @@ const news = reactive({
 </script>
 
 <template>
+    <Head title="اخبار"></Head>
     <AppLayout>
         <Datatable
             api="news"
@@ -36,7 +37,7 @@ const news = reactive({
                 <div class="flex items-center gap-x-2 flex-wrap">
                     <SecondaryButton
                         class="rounded-full"
-                        v-text="value.user.name"
+                        v-text="value.user?.name || ''"
                     ></SecondaryButton>
                 </div>
             </template>

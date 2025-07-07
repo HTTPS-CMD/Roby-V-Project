@@ -61,6 +61,7 @@ function onDelete() {
 </script>
 
 <template>
+    <Head title="سوالات متداول"></Head>
     <AppLayout>
         <div class="flex items-center gap-x-2 mt-4 mx-6">
             <div class="grow">

@@ -13,6 +13,7 @@ const notification = reactive({
 </script>
 
 <template>
+    <Head title="اعلان‌ها"></Head>
     <AppLayout>
         <Datatable
             api="notifications"

@@ -31,17 +31,18 @@ function submitHandler(fields, node) {
                 console.log(props);
 
                 if (props.flash.msg) modal.value = false;
-                if (props.flash.item) {
+                if (props.flash.item && _rows.value) {
                     if (
                         props.flash.item.created_at ===
                         props.flash.item.updated_at
                     ) {
-                        _rows.value?.data.unshift(props.flash.item);
+                        _rows.value.data.unshift(props.flash.item);
                     } else {
-                        let item = _rows.value?.data.find(
+                        let index = _rows.value.data.findIndex(
                             ({ id }) => id === props.flash.item.id
                         );
-                        item = props.flash.item;
+                        if (index !== -1)
+                            _rows.value.data[index] = props.flash.item;
                     }
                 }
             },

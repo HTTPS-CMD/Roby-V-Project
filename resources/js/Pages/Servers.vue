@@ -19,6 +19,7 @@ const server = reactive({
 </script>
 
 <template>
+    <Head title="سرورها"></Head>
     <AppLayout>
         <Datatable
             api="servers"
@@ -70,8 +71,10 @@ const server = reactive({
                 <div class="flex items-center gap-x-2">
                     <CountryFlag :country="value.location" size="small" />
                     {{
-                        _find(countries, ["code", value.location.toUpperCase()])
-                            ?.name_fa
+                        _find(countries, [
+                            "code",
+                            value.location?.toUpperCase(),
+                        ])?.name_fa
                     }}
                 </div>
             </template>

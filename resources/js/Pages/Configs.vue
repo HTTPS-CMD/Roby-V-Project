@@ -31,6 +31,7 @@ async function copyConfig(config: string) {
 </script>
 
 <template>
+    <Head title="کانفیگ‌ها"></Head>
     <AppLayout>
         <Datatable
             api="configs"
@@ -53,18 +54,18 @@ async function copyConfig(config: string) {
             <template #server_id="{ value }">
                 <div class="flex items-center gap-x-2">
                     <CountryFlag
-                        :country="value.server.location"
+                        :country="value.server?.location"
                         size="small"
                     />
-                    {{ value.server.name }}
+                    {{ value.server?.name }}
                 </div>
             </template>
             <template #user_id="{ value }">
-                {{ value.user.name }}
+                {{ value.user?.name }}
             </template>
             <template #config="{ value }">
                 <div
-                    @click="copyConfig(value.server.config_encrypted)"
+                    @click="copyConfig(value.server?.config_encrypted)"
                     class="border border-dashed border-gray-200 hover:border-solid hover:border-green-500 px-2 py-1.5 rounded-full cursor-pointer hover:text-green-500 transition flex items-center gap-x-2"
                 >
                     <ph-copy-simple-light />

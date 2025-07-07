@@ -29,6 +29,7 @@ const role = reactive({
 </script>
 
 <template>
+    <Head title="نقش‌ها"></Head>
     <AppLayout>
         <Datatable
             api="roles"
@@ -50,7 +51,7 @@ const role = reactive({
             <template #permissions="{ value }">
                 <div
                     class="flex items-center gap-x-2 flex-wrap"
-                    v-if="value.permissions.length"
+                    v-if="value.permissions?.length"
                 >
                     <SecondaryButton
                         class="rounded-full"

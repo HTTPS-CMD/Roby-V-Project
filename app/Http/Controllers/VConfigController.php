@@ -13,9 +13,8 @@ class VConfigController extends Controller
      */
     public function index()
     {
-        return response()->json(['configs'=>VConfig::where('user_id',Auth::id())/*->where('status',true)
-          ->whereColumn('usage','<','total')
-       ->whereDate('expire','>',now())*/->get()->map(fn($item) => $item->server->config_encrypted)]);
+        return response()->json(['configs'=>VConfig::where('user_id',Auth::id())->available()
+            ->get()->map(fn($item) => ['id'=>$item->id,'config'=>$item->server->config_encrypted])]);
     }
 
     /**
@@ -53,9 +52,28 @@ class VConfigController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VConfig $vConfig)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'config_id' => 'required|exists:v_configs,id',
+            'usage' => 'required|numeric|min:0'
+        ]);
+
+        $config = VConfig::findOrFail($request->config_id);
+
+        if ($config->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $config->usage = $request->usage;
+
+        if ($config->usage >= $config->total) {
+            $config->status = 'expired';
+        }
+
+        $config->save();
+
+        return response()->json(['message' => 'Usage updated'], 200);
     }
 
     /**

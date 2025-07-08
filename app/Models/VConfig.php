@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class VConfig extends Model
 {
@@ -48,5 +49,14 @@ class VConfig extends Model
     public function scopeBetweenExpired(Builder $query, string $start, string $end): void
     {
         $query->whereBetween('expire', [Carbon::parse($start)->startOfDay(), Carbon::parse($end)->endOfDay()]);
+    }
+
+    public function scopeAvailable(Builder $query): void
+    {
+        $query->where('status', 1)->where(function ($q) {
+            $q->whereNull('expire')
+            ->orWhere('expire', '>', now());
+        })
+        ->whereColumn('usage', '<', 'total');
     }
 }

@@ -31,6 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(\App\Http\Controllers\VConfigController::class)->prefix('/configs')->group(function () {
         Route::get('/',  'index');
-        Route::patch('update-usage/{id}', 'update');
+        Route::patch('update-usage', 'update');
     });
 });
